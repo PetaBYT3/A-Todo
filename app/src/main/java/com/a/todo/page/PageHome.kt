@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Logout
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.Scaffold
@@ -26,7 +24,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.a.todo.design.CustomIconButton
 import com.a.todo.event.EventHome
 import com.a.todo.state.StateHome
 import com.a.todo.viewmodel.ViewModelHome
@@ -77,9 +74,16 @@ private fun Content(
     Column(
         modifier = Modifier.fillMaxSize().padding(innerPadding).padding(horizontal = 15.dp).verticalScroll(rememberScrollState())
     ) {
-        CustomIconButton(
-            icon = Icons.Rounded.Logout,
-            onClick = { onEvent(EventHome.ButtonSignOut) }
-        )
+
     }
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun Preview() {
+    Content(
+        innerPadding = PaddingValues(0.dp),
+        state = StateHome(),
+        onEvent = {}
+    )
 }

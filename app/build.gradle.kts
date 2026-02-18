@@ -62,6 +62,9 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
+    //Splash Screen
+    implementation(libs.splash.screen)
+
     //Serialization
     implementation(libs.kotlinx.serialization.json)
 

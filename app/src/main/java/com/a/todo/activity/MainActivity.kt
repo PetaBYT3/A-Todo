@@ -7,20 +7,17 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
@@ -33,12 +30,15 @@ import com.a.todo.page.PageSignUp
 import com.a.todo.ui.theme.ATodoTheme
 import com.a.todo.util.SnackBar
 import com.a.todo.viewmodel.ViewModelMain
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.compose.koinInject
-import org.koin.compose.viewmodel.koinViewModel
 
 class MainActivity : ComponentActivity() {
+    private val viewModel: ViewModelMain by viewModel()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        installSplashScreen().setKeepOnScreenCondition { viewModel.isInitialized.value }
         enableEdgeToEdge()
         setContent {
             ATodoTheme {
@@ -46,8 +46,7 @@ class MainActivity : ComponentActivity() {
                     RoutePage.PageSignIn
                 )
 
-                val viewModel = koinViewModel<ViewModelMain>()
-                val snackBar = koinInject<SnackBar>()
+                val snackBar: SnackBar = koinInject()
                 val snackBarHostState = remember { SnackbarHostState() }
 
                 LaunchedEffect(viewModel.navigate) {
