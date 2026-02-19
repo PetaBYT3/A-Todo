@@ -4,9 +4,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -17,12 +20,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
+import com.a.todo.design.RootWindowInsets
 import com.a.todo.navigation.RoutePage
 import com.a.todo.page.PageHome
 import com.a.todo.page.PageSignIn
@@ -67,6 +72,7 @@ class MainActivity : ComponentActivity() {
 
                 Scaffold(
                     modifier = Modifier.fillMaxSize().imePadding(),
+                    contentWindowInsets = RootWindowInsets,
                     content = { innerPadding ->
                         NavDisplayContainer(
                             modifier = Modifier.padding(innerPadding),
@@ -86,8 +92,17 @@ private fun NavDisplayContainer(
     backStack: NavBackStack<NavKey>
 ) {
     NavDisplay(
-        modifier = modifier.imePadding(),
+        modifier = modifier.fillMaxSize(),
         backStack = backStack,
+        transitionSpec = {
+            slideInHorizontally { it } + fadeIn() togetherWith slideOutHorizontally { -it } + fadeOut()
+        },
+        popTransitionSpec = {
+            slideInHorizontally { -it } + fadeIn() togetherWith slideOutHorizontally { it } + fadeOut()
+        },
+        predictivePopTransitionSpec = {
+            slideInHorizontally { -it } + fadeIn() togetherWith slideOutHorizontally { it } + fadeOut()
+        },
         entryProvider = { navKey ->
             when (navKey) {
                 is RoutePage.PageSignIn -> {
@@ -111,12 +126,6 @@ private fun NavDisplayContainer(
                 }
                 else -> error("Unknown Navigation Key : $navKey")
             }
-        },
-        transitionSpec = {
-            slideInHorizontally { it } togetherWith slideOutHorizontally { -it }
-        },
-        popTransitionSpec = {
-            slideInHorizontally { -it } togetherWith slideOutHorizontally { it }
         }
     )
 }

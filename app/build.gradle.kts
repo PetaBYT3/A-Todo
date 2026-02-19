@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.google.gms.google.services)
+    alias(libs.plugins.google.ksp)
 }
 
 android {
@@ -75,6 +76,11 @@ dependencies {
     //DataStore
     implementation(libs.data.store.preferences)
     implementation(libs.androidx.datastore.core)
+
+    //Room Database
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
 
     //Navigation 3
     implementation(libs.androidx.navigation3.runtime)
