@@ -5,6 +5,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 
 @Composable
 fun CustomTextTitle(
@@ -15,6 +16,7 @@ fun CustomTextTitle(
         modifier = modifier,
         text = text,
         style = MaterialTheme.typography.bodyMedium,
+        overflow = TextOverflow.Ellipsis
     )
 }
 
@@ -27,5 +29,6 @@ fun CustomTextContent(
         modifier = modifier,
         text = text,
         style = MaterialTheme.typography.bodySmall,
+        overflow = TextOverflow.Ellipsis
     )
 }

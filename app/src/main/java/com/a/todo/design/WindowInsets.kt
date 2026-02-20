@@ -4,4 +4,4 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.ui.unit.dp
 
 val RootWindowInsets = WindowInsets(top = 0.dp)
-val InnerWindowInsets = WindowInsets(bottom = 0.dp)
+val InnerWindowInsets = WindowInsets()

@@ -64,10 +64,12 @@ fun CustomOutlinedButton(
 
 @Composable
 fun CustomIconButton(
+    modifier: Modifier = Modifier,
     icon: ImageVector,
     onClick: () -> Unit
 ) {
     IconButton(
+        modifier = modifier,
         onClick = { onClick.invoke() }
     ) {
         Icon(
