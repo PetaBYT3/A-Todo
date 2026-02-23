@@ -59,8 +59,7 @@ fun PageSignIn(
 }
 
 @Composable
-private fun TopBar(
-) {
+private fun TopBar() {
     LargeTopAppBar(
         title = { Text(text = "Sign In") }
     )

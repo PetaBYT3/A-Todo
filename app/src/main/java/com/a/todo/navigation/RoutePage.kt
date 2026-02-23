@@ -1,6 +1,7 @@
 package com.a.todo.navigation
 
 import androidx.navigation3.runtime.NavKey
+import kotlinx.serialization.SealedSerializationApi
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -13,4 +14,7 @@ sealed interface RoutePage: NavKey {
 
     @Serializable
     data object PageHome: RoutePage, NavKey
+
+    @Serializable
+    data object PageAddTodo: RoutePage, NavKey
 }

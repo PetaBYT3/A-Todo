@@ -2,6 +2,7 @@ package com.a.todo.module
 
 import com.a.todo.services.FirebaseAuth
 import com.a.todo.util.SnackBar
+import com.a.todo.viewmodel.ViewModelAddTodo
 import com.a.todo.viewmodel.ViewModelHome
 import com.a.todo.viewmodel.ViewModelMain
 import com.a.todo.viewmodel.ViewModelSignIn
@@ -16,6 +17,7 @@ object ModuleApp {
         viewModelOf(::ViewModelSignIn)
         viewModelOf(::ViewModelSignUp)
         viewModelOf(::ViewModelHome)
+        viewModelOf(::ViewModelAddTodo)
     }
 
     private val moduleServices = module {

@@ -6,7 +6,7 @@ import com.a.todo.enumclass.TodoImportance
 import com.a.todo.enumclass.TodoStatus
 import java.util.Date
 
-@Entity(tableName = "")
+@Entity(tableName = "todoTable")
 data class EntityTodo(
     @PrimaryKey(autoGenerate = true)
     val todoId: Long,

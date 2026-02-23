@@ -29,6 +29,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.a.todo.design.RootWindowInsets
 import com.a.todo.navigation.RoutePage
+import com.a.todo.page.PageAddTodo
 import com.a.todo.page.PageHome
 import com.a.todo.page.PageSignIn
 import com.a.todo.page.PageSignUp
@@ -121,7 +122,16 @@ private fun NavDisplayContainer(
                 }
                 is RoutePage.PageHome -> {
                     NavEntry(navKey) {
-                        PageHome()
+                        PageHome(
+                            backStack = backStack
+                        )
+                    }
+                }
+                is RoutePage.PageAddTodo -> {
+                    NavEntry(navKey) {
+                        PageAddTodo(
+                            backStack = backStack
+                        )
                     }
                 }
                 else -> error("Unknown Navigation Key : $navKey")
