@@ -37,6 +37,7 @@ fun CustomTextField(
     modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
+    enabled: Boolean = true,
     leadingIcon: ImageVector,
     placeholder: String,
     trailingIcon: ImageVector? = null,
@@ -49,6 +50,7 @@ fun CustomTextField(
             modifier = modifier,
             value = value,
             onValueChange = { onValueChange(it) },
+            enabled = enabled,
             leadingIcon = {
                 Icon(
                     imageVector = leadingIcon,

@@ -2,8 +2,6 @@ package com.a.todo.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.a.todo.enumclass.TodoImportance
-import com.a.todo.enumclass.TodoStatus
 import java.util.Date
 
 @Entity(tableName = "todoTable")

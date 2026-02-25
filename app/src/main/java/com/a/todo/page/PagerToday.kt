@@ -9,6 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,20 +33,26 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.a.todo.design.CustomBoxCard
 import com.a.todo.design.CustomButton
 import com.a.todo.design.CustomIconButton
 import com.a.todo.design.CustomSingleButtonGroup
 import com.a.todo.design.CustomTextContent
 import com.a.todo.design.CustomTextTitle
+import com.a.todo.state.StateToday
+import com.a.todo.viewmodel.ViewModelToday
 import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
 
 @Preview(showBackground = true)
 @Composable
 fun PagerToday(
-
+    viewModel: ViewModelToday = koinViewModel()
 ) {
     val scope = rememberCoroutineScope()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(15.dp)
@@ -70,7 +79,9 @@ fun PagerToday(
             state = pagerState
         ) { pager ->
             when (pager) {
-                0 -> PagerTodo()
+                0 -> PagerTodo(
+                    state = state
+                )
                 1 -> PagerDone()
             }
         }
@@ -78,41 +89,52 @@ fun PagerToday(
 }
 
 @Composable
-private fun PagerTodo() {
-    CustomBoxCard(
-        modifier = Modifier.fillMaxWidth()
+private fun PagerTodo(
+    state: StateToday
+) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
-        Column(
-            modifier = Modifier.width(5.dp).fillMaxHeight(1f).clip(RoundedCornerShape(50)).background(Color.Red)
-        ) {}
-        Column(
-            modifier = Modifier.fillMaxWidth(0.70f).padding(start = 15.dp).align(Alignment.CenterStart),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+        items(
+            items = state.todoToday
+        ) { todoToday ->
+            CustomBoxCard(
+                modifier = Modifier.fillMaxWidth()
             ) {
-                CustomTextTitle(
-                    modifier = Modifier,
-                    text = "Todo Title"
-                )
-                CustomTextContent(
-                    modifier = Modifier,
-                    text = "YYYY/MM/DD"
+                Column(
+                    modifier = Modifier.width(5.dp).fillMaxHeight(1f).clip(RoundedCornerShape(50)).background(Color.Red)
+                ) {}
+                Column(
+                    modifier = Modifier.fillMaxWidth(0.70f).padding(start = 15.dp).align(Alignment.CenterStart),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        CustomTextTitle(
+                            modifier = Modifier,
+                            text = todoToday.todoTitle
+                        )
+                        CustomTextContent(
+                            modifier = Modifier,
+                            text = "YYYY/MM/DD"
+                        )
+                    }
+                    CustomTextContent(
+                        modifier = Modifier,
+                        text = todoToday.todoContent
+                    )
+                }
+                CustomButton(
+                    modifier = Modifier.align(Alignment.CenterEnd),
+                    text = "Done",
+                    onClick = {}
                 )
             }
-            CustomTextContent(
-                modifier = Modifier,
-                text = "Todo Content"
-            )
         }
-        CustomButton(
-            modifier = Modifier.align(Alignment.CenterEnd),
-            text = "Done",
-            onClick = {}
-        )
     }
 }
 

@@ -1,11 +1,19 @@
 package com.a.todo.local
 
 import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
+import androidx.room.Delete
+import androidx.room.Query
+import androidx.room.Upsert
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface Dao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTodo()
+    @Upsert
+    suspend fun upsertTodo(todo: EntityTodo)
+
+    @Delete
+    suspend fun delete(todo: EntityTodo)
+
+    @Query("SELECT * FROM todoTable ORDER BY todoId DESC")
+    fun getAllTodo(): Flow<List<EntityTodo>>
 }

@@ -1,10 +1,8 @@
 package com.a.todo.state
 
-import java.util.Date
-
 data class StateAddTodo(
     val buttonGroupTodoImportance: String = "",
-    val todoDate: Date? = null,
+    val textTodoDay: Int = 1,
     val textFieldTodoTitle: String = "",
     val textFieldTodoContent: String = "",
 )
