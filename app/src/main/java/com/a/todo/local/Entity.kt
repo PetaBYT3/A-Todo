@@ -9,10 +9,10 @@ import java.util.Date
 @Entity(tableName = "todoTable")
 data class EntityTodo(
     @PrimaryKey(autoGenerate = true)
-    val todoId: Long,
-    val todoImportance: TodoImportance,
-    val todoTitle: String,
+    val todoId: Long = 0,
+    val todoImportance: String,
     val todoDate: Date,
+    val todoTitle: String,
     val todoContent: String,
-    val todoStatus: TodoStatus
+    val todoStatus: String
 )

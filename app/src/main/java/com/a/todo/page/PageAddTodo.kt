@@ -7,13 +7,19 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Abc
 import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Save
+import androidx.compose.material.icons.rounded.Subtitles
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -28,6 +34,9 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
 import com.a.todo.design.CustomIconButton
 import com.a.todo.design.CustomSingleButtonGroup
+import com.a.todo.design.CustomTextField
+import com.a.todo.design.CustomTextHeader
+import com.a.todo.design.CustomTextTitle
 import com.a.todo.design.CustomVerticalCardGroup
 import com.a.todo.design.InnerWindowInsets
 import com.a.todo.event.EventAddTodo
@@ -58,6 +67,11 @@ fun PageAddTodo(
                 state = state,
                 onEvent = onEvent
             )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onEvent = onEvent
+            )
         }
     )
 }
@@ -86,8 +100,49 @@ private fun Content(
         modifier = Modifier.padding(innerPadding).padding(horizontal = 15.dp).verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
-
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(5.dp)
+        ) {
+            CustomTextHeader(text = "Importance")
+            val buttonList = listOf("Low", "Medium", "High")
+            CustomSingleButtonGroup(
+                buttonList = buttonList,
+                value = state.buttonGroupTodoImportance,
+                onCheckedChange = { onEvent(EventAddTodo.ButtonGroupTodoImportance(it)) }
+            )
+        }
+        CustomTextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = state.textFieldTodoTitle,
+            onValueChange = { onEvent(EventAddTodo.TextFieldTodoTitle(it)) },
+            leadingIcon = Icons.Rounded.Abc,
+            placeholder = "Title"
+        )
+        CustomTextField(
+            modifier = Modifier.fillMaxWidth().height(200.dp),
+            value = state.textFieldTodoContent,
+            onValueChange = { onEvent(EventAddTodo.TextFieldTodoContent(it)) },
+            leadingIcon = Icons.Rounded.Subtitles,
+            placeholder = "Content"
+        )
     }
+}
+
+@Composable
+private fun FloatingActionButton(
+    onEvent: (EventAddTodo) -> Unit
+) {
+    ExtendedFloatingActionButton(
+        icon = {
+            Icon(
+                imageVector = Icons.Rounded.Save,
+                contentDescription = null
+            )
+        },
+        text = { Text(text = "Save") },
+        onClick = {},
+    )
 }
 
 @Preview(showBackground = true)

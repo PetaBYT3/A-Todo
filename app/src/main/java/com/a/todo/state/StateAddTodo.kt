@@ -1,7 +1,10 @@
 package com.a.todo.state
 
-import com.a.todo.enumclass.TodoImportance
+import java.util.Date
 
 data class StateAddTodo(
-    val buttonGroupTodoImportance: TodoImportance? = null
+    val buttonGroupTodoImportance: String = "",
+    val todoDate: Date? = null,
+    val textFieldTodoTitle: String = "",
+    val textFieldTodoContent: String = "",
 )

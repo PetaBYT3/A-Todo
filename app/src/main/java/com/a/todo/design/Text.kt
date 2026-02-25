@@ -8,6 +8,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 
 @Composable
+fun CustomTextHeader(
+    modifier: Modifier = Modifier,
+    text: String
+) {
+    Text(
+        modifier = modifier,
+        text = text,
+        style = MaterialTheme.typography.bodyLarge,
+        overflow = TextOverflow.Ellipsis
+    )
+}
+
+@Composable
 fun CustomTextTitle(
     modifier: Modifier = Modifier,
     text: String

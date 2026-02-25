@@ -28,7 +28,12 @@ class ViewModelAddTodo(
             is EventAddTodo.ButtonGroupTodoImportance -> {
                 _state.update { it.copy(buttonGroupTodoImportance = eventAddTodo.todoImportance) }
             }
-            is EventAddTodo.TextFieldTodoTitle -> TODO()
+            is EventAddTodo.TextFieldTodoTitle -> {
+                _state.update { it.copy(textFieldTodoTitle = eventAddTodo.todoTitle) }
+            }
+            is EventAddTodo.TextFieldTodoContent -> {
+                _state.update { it.copy(textFieldTodoContent = eventAddTodo.todoContent) }
+            }
         }
     }
 }
