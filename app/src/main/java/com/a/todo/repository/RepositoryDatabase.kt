@@ -6,7 +6,6 @@ import com.a.todo.local.EntityTodo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -45,22 +44,57 @@ class RepositoryDatabase(
         }
     }.flowOn(Dispatchers.IO)
 
-    fun getTodoToday(): Flow<ResponseDatabase> = callbackFlow {
+    fun markAsDoneTodo(todo: EntityTodo): Flow<ResponseDatabase> = flow {
+        try {
+            val updatedTodo = todo.copy(
+                todoStatus = "Done"
+            )
+
+            dao.upsertTodo(updatedTodo)
+            emit(ResponseDatabase.Success("Todo ${updatedTodo.todoTitle} marked as done"))
+        } catch (e: Exception) {
+            emit(ResponseDatabase.Failed(e.message.toString().capitalizeEachWord()))
+        }
+    }.flowOn(Dispatchers.IO)
+
+    fun getTodoTodoToday(): Flow<ResponseDatabase> = callbackFlow {
         try {
             val formatter = SimpleDateFormat("yyyy MM dd", Locale.getDefault())
             val today = formatter.format(Date())
 
-            val todoToday = dao.getAllTodo().map { allTodo ->
+            dao.getAllTodo().map { allTodo ->
                 allTodo.filter { todo ->
                     val todoDate = formatter.format(todo.todoDate)
-                    todoDate == today
+                    todoDate == today && todo.todoStatus == "Todo"
                 }
+            }.collect { result ->
+                trySend(ResponseDatabase.Success(
+                    messageSuccess = "Success",
+                    listTodo = result
+                ))
             }
+        } catch (e: Exception) {
+            trySend(ResponseDatabase.Failed(e.message.toString().capitalizeEachWord()))
+            close()
+        }
+    }.flowOn(Dispatchers.IO)
 
-            trySend(ResponseDatabase.Success(
-                messageSuccess = "Success",
-                listTodo = todoToday as List<EntityTodo>
-            ))
+    fun getDoneTodoToday(): Flow<ResponseDatabase> = callbackFlow {
+        try {
+            val formatter = SimpleDateFormat("yyyy MM dd", Locale.getDefault())
+            val today = formatter.format(Date())
+
+            dao.getAllTodo().map { allTodo ->
+                allTodo.filter { todo ->
+                    val todoDate = formatter.format(todo.todoDate)
+                    todoDate == today && todo.todoStatus == "Done"
+                }
+            }.collect { result ->
+                trySend(ResponseDatabase.Success(
+                    messageSuccess = "Success",
+                    listTodo = result
+                ))
+            }
         } catch (e: Exception) {
             trySend(ResponseDatabase.Failed(e.message.toString().capitalizeEachWord()))
             close()

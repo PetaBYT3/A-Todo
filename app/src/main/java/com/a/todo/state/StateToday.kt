@@ -1,7 +1,8 @@
 package com.a.todo.state
 
-import com.a.todo.local.EntityTodo
+import com.a.todo.repository.ResponseDatabase
 
 data class StateToday(
-    val todoToday: List<EntityTodo> = emptyList()
+    val todoTodoTodayResponse: ResponseDatabase? = null,
+    val doneTodoTodayResponse: ResponseDatabase? = null
 )
