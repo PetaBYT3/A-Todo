@@ -20,14 +20,11 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CheckBox
 import androidx.compose.material.icons.rounded.CheckBoxOutlineBlank
-import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LoadingIndicator
-import androidx.compose.material3.OutlinedCard
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -41,8 +38,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.a.todo.design.CustomComposableBottomSheet
 import com.a.todo.design.CustomIconButton
-import com.a.todo.design.CustomOutlinedButton
 import com.a.todo.design.CustomSingleButtonGroup
 import com.a.todo.design.CustomTextContent
 import com.a.todo.design.CustomTextHeader
@@ -100,6 +97,57 @@ fun PagerToday(
             }
         }
     }
+
+    CustomComposableBottomSheet(
+        isBottomSheetVisible = state.bottomSheetMarkAsDone,
+        title = "Mark Todo as Done",
+        content = {
+            Card(
+                modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(15.dp),
+                    horizontalArrangement = Arrangement.spacedBy(15.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Warning,
+                        contentDescription = null,
+                        tint = when (state.todoToDelete?.todoImportance) {
+                            "Low" -> Color.Green
+                            "Medium" -> Color.Yellow
+                            "High" -> Color.Red
+                            else -> Color.Unspecified
+                        }
+                    )
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(5.dp)
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(5.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            CustomTextTitle(text = state.todoToDelete?.todoTitle ?: "")
+                            CustomTextContent(text = convertLongToString(state.todoToDelete?.todoDate ?: 0))
+                        }
+                        CustomTextContent(text = state.todoToDelete?.todoContent ?: "")
+                    }
+                    Spacer(modifier = Modifier.weight(1f))
+                    CustomIconButton(
+                        icon = Icons.Rounded.CheckBox,
+                        onClick = {}
+                    )
+                }
+            }
+        },
+        onCancel = {
+            onEvent(EventToday.BottomSheetMarkAsDoneVisibility(false, null))
+        },
+        onConfirm = {
+            onEvent(EventToday.ButtonMarkAsDone)
+            onEvent(EventToday.BottomSheetMarkAsDoneVisibility(false, null))
+        }
+    )
 }
 
 @Composable
@@ -158,7 +206,7 @@ private fun PagerTodo(
                                     Spacer(modifier = Modifier.weight(1f))
                                     CustomIconButton(
                                         icon = Icons.Rounded.CheckBoxOutlineBlank,
-                                        onClick = {}
+                                        onClick = { onEvent(EventToday.BottomSheetMarkAsDoneVisibility(true, todoToday)) }
                                     )
                                 }
                             }

@@ -21,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CalendarToday
 import androidx.compose.material.icons.rounded.CheckBox
 import androidx.compose.material.icons.rounded.Dangerous
+import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material.icons.rounded.Task
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.Card
@@ -152,7 +153,7 @@ private fun PagerAllTodo(
                                     }
                                     Spacer(modifier = Modifier.weight(1f))
                                     CustomIconButton(
-                                        icon = Icons.Rounded.Task,
+                                        icon = Icons.Rounded.Schedule,
                                         onClick = {}
                                     )
                                 }

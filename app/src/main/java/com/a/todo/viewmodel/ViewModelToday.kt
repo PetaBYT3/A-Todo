@@ -47,18 +47,25 @@ class ViewModelToday(
 
     fun onEvent(eventToday: EventToday) {
         when (eventToday) {
-            is EventToday.ButtonMarkAsDone -> {
-                buttonMarkAsDone(eventToday.markAsDoneTodo)
+            is EventToday.BottomSheetMarkAsDoneVisibility -> {
+                _state.update { it.copy(bottomSheetMarkAsDone = eventToday.isVisible, todoToDelete = eventToday.todoToDelete) }
+            }
+            EventToday.ButtonMarkAsDone -> {
+                buttonMarkAsDone()
             }
         }
     }
 
-    private fun buttonMarkAsDone(todo: EntityTodo) {
+    private fun buttonMarkAsDone() {
         viewModelScope.launch {
-            repositoryDatabase.markAsDoneTodo(todo).collect { result ->
-                when (result) {
-                    is ResponseDatabase.Success -> snackBar.showSnackBar(result.messageSuccess)
-                    is ResponseDatabase.Failed -> snackBar.showSnackBar(result.messageFailed)
+            val todoToDelete = _state.value.todoToDelete
+
+            if (todoToDelete != null) {
+                repositoryDatabase.markAsDoneTodo(todoToDelete).collect { result ->
+                    when (result) {
+                        is ResponseDatabase.Success -> snackBar.showSnackBar(result.messageSuccess)
+                        is ResponseDatabase.Failed -> snackBar.showSnackBar(result.messageFailed)
+                    }
                 }
             }
         }
