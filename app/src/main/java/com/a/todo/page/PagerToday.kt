@@ -66,7 +66,7 @@ fun PagerToday(
         var buttonGroupState by rememberSaveable { mutableStateOf(buttonList[0]) }
         val pagerState = rememberPagerState(pageCount = { buttonList.size })
         CustomSingleButtonGroup(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp),
             buttonList = buttonList,
             value = buttonGroupState,
             onCheckedChange = {
@@ -120,7 +120,7 @@ private fun PagerTodo(
                             items = state.todoTodoTodayResponse.listTodo
                         ) { todoToday ->
                             Card(
-                                modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min)
+                                modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min).padding(horizontal = 15.dp)
                             ) {
                                 Row(
                                     modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(15.dp),
@@ -197,7 +197,7 @@ private fun PagerDone(
                             items = state.doneTodoTodayResponse.listTodo
                         ) { todoToday ->
                             Card(
-                                modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min)
+                                modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min).padding(horizontal = 15.dp)
                             ) {
                                 Row(
                                     modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(15.dp),

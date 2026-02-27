@@ -66,6 +66,13 @@ class RepositoryDatabase(
                 allTodo.filter { todo ->
                     val todoDate = formatter.format(todo.todoDate)
                     todoDate == today && todo.todoStatus == "Todo"
+                }.sortedBy { todo ->
+                    when (todo.todoImportance) {
+                        "High" -> 1
+                        "Medium" -> 2
+                        "Low" -> 3
+                        else -> 4
+                    }
                 }
             }.collect { result ->
                 trySend(ResponseDatabase.Success(

@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Text
@@ -32,7 +33,7 @@ fun PagerAll(
         var buttonGroupState by rememberSaveable { mutableStateOf(buttonList[0]) }
         val pagerState = rememberPagerState(pageCount = { buttonList.size })
         CustomSingleButtonGroup(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp),
             buttonList = buttonList,
             value = buttonGroupState,
             onCheckedChange = {

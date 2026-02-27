@@ -49,15 +49,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
-import com.a.todo.design.CustomBoxCard
-import com.a.todo.design.CustomButton
-import com.a.todo.design.CustomColumnCard
-import com.a.todo.design.CustomIconButton
-import com.a.todo.design.CustomRowCard
 import com.a.todo.design.CustomSingleButtonGroup
-import com.a.todo.design.CustomTextContent
-import com.a.todo.design.CustomTextTitle
-import com.a.todo.design.InnerWindowInsets
+import com.a.todo.design.innerWindowInsets
 import com.a.todo.event.EventHome
 import com.a.todo.navigation.RoutePage
 import com.a.todo.state.StateHome
@@ -76,7 +69,7 @@ fun PageHome(
     val scrollBehaviour = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     Scaffold(
         modifier = Modifier.imePadding().nestedScroll(scrollBehaviour.nestedScrollConnection),
-        contentWindowInsets = InnerWindowInsets,
+        contentWindowInsets = innerWindowInsets(),
         topBar = {
             TopBar(
                 scrollBehavior = scrollBehaviour
@@ -119,14 +112,14 @@ private fun Content(
 ) {
     val scope = rememberCoroutineScope()
     Column(
-        modifier = Modifier.fillMaxSize().padding(innerPadding).padding(horizontal = 15.dp),
+        modifier = Modifier.fillMaxSize().padding(innerPadding),
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         val buttonList = listOf("Today", "Tomorrow", "All")
         var buttonGroupState by rememberSaveable { mutableStateOf(buttonList[0]) }
         val pagerState = rememberPagerState(pageCount = { buttonList.size })
         CustomSingleButtonGroup(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp),
             buttonList = buttonList,
             value = buttonGroupState,
             onCheckedChange = {

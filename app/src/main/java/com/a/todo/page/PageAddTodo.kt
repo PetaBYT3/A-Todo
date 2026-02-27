@@ -50,7 +50,7 @@ import com.a.todo.design.CustomSingleButtonGroup
 import com.a.todo.design.CustomTextContent
 import com.a.todo.design.CustomTextField
 import com.a.todo.design.CustomTextTitle
-import com.a.todo.design.InnerWindowInsets
+import com.a.todo.design.innerWindowInsets
 import com.a.todo.event.EventAddTodo
 import com.a.todo.extension.getFutureDateByDaysAsString
 import com.a.todo.state.StateAddTodo
@@ -68,7 +68,7 @@ fun PageAddTodo(
     val scrollBehaviour = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     Scaffold(
         modifier = Modifier.fillMaxSize().imePadding().nestedScroll(scrollBehaviour.nestedScrollConnection),
-        contentWindowInsets = InnerWindowInsets,
+        contentWindowInsets = innerWindowInsets(),
         topBar = {
             TopBar(
                 backStack = backStack,

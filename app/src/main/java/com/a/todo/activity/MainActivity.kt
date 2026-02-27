@@ -27,7 +27,7 @@ import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import com.a.todo.design.RootWindowInsets
+import com.a.todo.design.rootWindowInsets
 import com.a.todo.navigation.RoutePage
 import com.a.todo.page.PageAddTodo
 import com.a.todo.page.PageHome
@@ -73,7 +73,7 @@ class MainActivity : ComponentActivity() {
 
                 Scaffold(
                     modifier = Modifier.fillMaxSize().imePadding(),
-                    contentWindowInsets = RootWindowInsets,
+                    contentWindowInsets = rootWindowInsets(),
                     content = { innerPadding ->
                         NavDisplayContainer(
                             modifier = Modifier.padding(innerPadding),
