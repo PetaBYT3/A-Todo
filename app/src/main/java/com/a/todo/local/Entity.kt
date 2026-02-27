@@ -9,7 +9,7 @@ data class EntityTodo(
     @PrimaryKey(autoGenerate = true)
     val todoId: Long = 0,
     val todoImportance: String,
-    val todoDate: Date,
+    val todoDate: Long,
     val todoTitle: String,
     val todoContent: String,
     val todoStatus: String

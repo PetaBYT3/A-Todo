@@ -3,7 +3,7 @@ package com.a.todo.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.a.todo.event.EventAddTodo
-import com.a.todo.extension.getFutureDateByDaysAsDate
+import com.a.todo.extension.getFutureDateByDaysAsLong
 import com.a.todo.local.Dao
 import com.a.todo.local.EntityTodo
 import com.a.todo.repository.RepositoryDatabase
@@ -59,7 +59,7 @@ class ViewModelAddTodo(
         viewModelScope.launch {
             val entityTodo = EntityTodo(
                 todoImportance = _state.value.buttonGroupTodoImportance,
-                todoDate = getFutureDateByDaysAsDate(_state.value.textTodoDay),
+                todoDate = getFutureDateByDaysAsLong(_state.value.textTodoDay),
                 todoTitle = _state.value.textFieldTodoTitle,
                 todoContent = _state.value.textFieldTodoContent,
                 todoStatus = "Todo"

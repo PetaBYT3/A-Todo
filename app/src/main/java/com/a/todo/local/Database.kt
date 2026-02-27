@@ -8,10 +8,9 @@ import androidx.room.TypeConverters
 
 @Database(
     entities = [EntityTodo::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
-@TypeConverters(DataConverters::class)
 abstract class Database: RoomDatabase() {
     abstract fun dao(): Dao
 }

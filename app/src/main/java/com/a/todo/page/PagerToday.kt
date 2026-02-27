@@ -18,12 +18,16 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.CheckBox
+import androidx.compose.material.icons.rounded.CheckBoxOutlineBlank
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LoadingIndicator
+import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -37,12 +41,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.a.todo.design.CustomIconButton
 import com.a.todo.design.CustomOutlinedButton
 import com.a.todo.design.CustomSingleButtonGroup
 import com.a.todo.design.CustomTextContent
 import com.a.todo.design.CustomTextHeader
 import com.a.todo.design.CustomTextTitle
 import com.a.todo.event.EventToday
+import com.a.todo.extension.convertLongToString
 import com.a.todo.repository.ResponseDatabase
 import com.a.todo.state.StateToday
 import com.a.todo.viewmodel.ViewModelToday
@@ -141,17 +147,18 @@ private fun PagerTodo(
                                         verticalArrangement = Arrangement.spacedBy(5.dp)
                                     ) {
                                         Row(
-                                            horizontalArrangement = Arrangement.spacedBy(5.dp)
+                                            horizontalArrangement = Arrangement.spacedBy(5.dp),
+                                            verticalAlignment = Alignment.CenterVertically
                                         ) {
                                             CustomTextTitle(text = todoToday.todoTitle)
-                                            CustomTextTitle(text = "Date")
+                                            CustomTextContent(text = convertLongToString(todoToday.todoDate))
                                         }
                                         CustomTextContent(text = todoToday.todoContent)
                                     }
                                     Spacer(modifier = Modifier.weight(1f))
-                                    CustomOutlinedButton(
-                                        text = "Done",
-                                        onClick = { onEvent(EventToday.ButtonMarkAsDone(todoToday)) }
+                                    CustomIconButton(
+                                        icon = Icons.Rounded.CheckBoxOutlineBlank,
+                                        onClick = {}
                                     )
                                 }
                             }
@@ -218,17 +225,18 @@ private fun PagerDone(
                                         verticalArrangement = Arrangement.spacedBy(5.dp)
                                     ) {
                                         Row(
-                                            horizontalArrangement = Arrangement.spacedBy(5.dp)
+                                            horizontalArrangement = Arrangement.spacedBy(5.dp),
+                                            verticalAlignment = Alignment.CenterVertically
                                         ) {
                                             CustomTextTitle(text = todoToday.todoTitle)
-                                            CustomTextTitle(text = "Date")
+                                            CustomTextContent(text = convertLongToString(todoToday.todoDate))
                                         }
                                         CustomTextContent(text = todoToday.todoContent)
                                     }
                                     Spacer(modifier = Modifier.weight(1f))
-                                    Icon(
-                                        imageVector = Icons.Rounded.CheckCircle,
-                                        contentDescription = null
+                                    CustomIconButton(
+                                        icon = Icons.Rounded.CheckBox,
+                                        onClick = {}
                                     )
                                 }
                             }
@@ -237,7 +245,7 @@ private fun PagerDone(
                 } else {
                     CustomTextHeader(
                         modifier = Modifier.align(Alignment.TopCenter),
-                        text = "Not any task done yet"
+                        text = "Not any task done today"
                     )
                 }
             }
