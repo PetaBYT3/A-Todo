@@ -4,11 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.a.todo.navigation.RoutePage
 import com.a.todo.services.FirebaseAuth
+import com.a.todo.services.ResponseAuth
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.shareIn
@@ -31,9 +33,20 @@ class ViewModelMain(
 
     private fun initializeAuth() {
         viewModelScope.launch {
-            firebaseAuth.getAuthState().collect { authState ->
+            combine(
+                firebaseAuth.getAuthState(),
+                firebaseAuth.checkEmailVerification()
+            ) { authState, emailVerification ->
+                Pair(authState, emailVerification)
+            }.collect { (authState, emailVerification) ->
                 when {
-                    authState != null -> {
+                    authState != null && emailVerification is ResponseAuth.Success -> {
+                        _navigate.send(RoutePage.PageHome)
+                    }
+                    authState != null && emailVerification is ResponseAuth.Failed -> {
+                        _navigate.send(RoutePage.PageEmailVerification)
+                    }
+                    false -> {
                         _navigate.send(RoutePage.PageHome)
                     }
                     else -> {

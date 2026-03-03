@@ -28,6 +28,7 @@ import androidx.navigation3.ui.NavDisplay
 import com.a.todo.design.rootWindowInsets
 import com.a.todo.navigation.RoutePage
 import com.a.todo.page.PageAddTodo
+import com.a.todo.page.PageEmailVerification
 import com.a.todo.page.PageHome
 import com.a.todo.page.PageSettings
 import com.a.todo.page.PageSignIn
@@ -115,6 +116,13 @@ private fun NavDisplayContainer(
                 is RoutePage.PageSignUp -> {
                     NavEntry(navKey) {
                         PageSignUp(
+                            backStack = backStack
+                        )
+                    }
+                }
+                is RoutePage.PageEmailVerification -> {
+                    NavEntry(navKey) {
+                        PageEmailVerification(
                             backStack = backStack
                         )
                     }

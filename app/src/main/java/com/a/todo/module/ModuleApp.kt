@@ -8,6 +8,7 @@ import com.a.todo.services.FirebaseAuth
 import com.a.todo.util.SnackBar
 import com.a.todo.viewmodel.ViewModelAddTodo
 import com.a.todo.viewmodel.ViewModelAll
+import com.a.todo.viewmodel.ViewModelEmailVerification
 import com.a.todo.viewmodel.ViewModelHome
 import com.a.todo.viewmodel.ViewModelMain
 import com.a.todo.viewmodel.ViewModelSettings
@@ -28,6 +29,7 @@ object ModuleApp {
         viewModelOf(::ViewModelMain)
         viewModelOf(::ViewModelSignIn)
         viewModelOf(::ViewModelSignUp)
+        viewModelOf(::ViewModelEmailVerification)
         viewModelOf(::ViewModelHome)
         viewModelOf(::ViewModelToday)
         viewModelOf(::ViewModelTomorrow)

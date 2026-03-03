@@ -88,8 +88,8 @@ fun PageHome(
 
 @Composable
 private fun TopBar(
-    scrollBehavior: TopAppBarScrollBehavior,
-    backStack: NavBackStack<NavKey>
+    backStack: NavBackStack<NavKey>,
+    scrollBehavior: TopAppBarScrollBehavior
 ) {
     LargeTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(

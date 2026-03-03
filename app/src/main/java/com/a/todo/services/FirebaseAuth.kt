@@ -6,10 +6,13 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 sealed class ResponseAuth {
@@ -108,6 +111,47 @@ class FirebaseAuth {
             emit(ResponseAuth.Success("Bind Success"))
         } catch (e: Exception) {
             emit(ResponseAuth.Failed(e.message.toString().capitalizeEachWord()))
+        }
+    }.flowOn(Dispatchers.IO)
+
+    fun sendEmailVerification(): Flow<ResponseAuth> = flow {
+        try {
+            firebaseAuth.currentUser?.sendEmailVerification()?.await()
+            emit(ResponseAuth.Success("Link Verification Has Been Sent To Your Email"))
+        } catch (e: Exception) {
+            emit(ResponseAuth.Failed(e.message.toString().capitalizeEachWord()))
+        }
+    }.flowOn(Dispatchers.IO)
+
+    fun checkEmailVerification(): Flow<ResponseAuth> = callbackFlow {
+        try {
+            val currentUser = firebaseAuth.currentUser
+
+            if (currentUser == null) {
+                trySend(ResponseAuth.Failed("Invalid Session"))
+                close()
+                return@callbackFlow
+            }
+
+            val verification = launch {
+                while (isActive) {
+                    currentUser.reload().await()
+                    val isVerified = currentUser.isEmailVerified
+
+                    if (isVerified) {
+                        trySend(ResponseAuth.Success("Email Has Been Verified"))
+                        close()
+                    } else {
+                        trySend(ResponseAuth.Failed("Not Verified"))
+                    }
+                    delay(3_000)
+                }
+            }
+
+            awaitClose { verification.cancel() }
+        } catch (e: Exception) {
+            trySend(ResponseAuth.Failed(e.message.toString().capitalizeEachWord()))
+            close()
         }
     }.flowOn(Dispatchers.IO)
 
