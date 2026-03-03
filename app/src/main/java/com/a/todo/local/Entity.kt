@@ -2,7 +2,6 @@ package com.a.todo.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.util.Date
 
 @Entity(tableName = "todoTable")
 data class EntityTodo(

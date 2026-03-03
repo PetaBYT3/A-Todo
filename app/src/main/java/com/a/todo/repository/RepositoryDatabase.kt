@@ -7,13 +7,12 @@ import com.a.todo.local.EntityTodo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.Date
 import java.util.Locale
 
 sealed class ResponseDatabase {
@@ -191,6 +190,29 @@ class RepositoryDatabase(
         } catch (e: Exception) {
             trySend(ResponseDatabase.Failed(e.message.toString().capitalizeEachWord()))
             close()
+        }
+    }.flowOn(Dispatchers.IO)
+
+    fun setUnfinishedTodoToExpired(): Flow<ResponseDatabase> = flow {
+        try {
+            val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault())
+            val yesterday = LocalDate.now().minusDays(1).format(formatter)
+
+            val yesterdayTodo = dao.getAllTodo().map { allTodo ->
+                allTodo.filter { todo ->
+                    val todoDate = convertLongToString(todo.todoDate)
+                    todoDate == yesterday
+                }
+            }.first()
+
+            if (yesterdayTodo.isNotEmpty()) {
+                val expiredTodo = yesterdayTodo.map { it.copy(todoStatus = "Expired") }
+                dao.upsertListTodo(expiredTodo)
+            }
+
+            emit(ResponseDatabase.Success(messageSuccess = "Expired todo updated"))
+        } catch (e: Exception) {
+            emit(ResponseDatabase.Failed(e.message.toString().capitalizeEachWord()))
         }
     }.flowOn(Dispatchers.IO)
 }

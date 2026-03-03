@@ -9,7 +9,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -20,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavEntry
@@ -31,6 +29,7 @@ import com.a.todo.design.rootWindowInsets
 import com.a.todo.navigation.RoutePage
 import com.a.todo.page.PageAddTodo
 import com.a.todo.page.PageHome
+import com.a.todo.page.PageSettings
 import com.a.todo.page.PageSignIn
 import com.a.todo.page.PageSignUp
 import com.a.todo.ui.theme.ATodoTheme
@@ -130,6 +129,13 @@ private fun NavDisplayContainer(
                 is RoutePage.PageAddTodo -> {
                     NavEntry(navKey) {
                         PageAddTodo(
+                            backStack = backStack
+                        )
+                    }
+                }
+                is RoutePage.PageSettings -> {
+                    NavEntry(navKey) {
+                        PageSettings(
                             backStack = backStack
                         )
                     }

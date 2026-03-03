@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,8 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.CalendarToday
-import androidx.compose.material.icons.rounded.CheckBoxOutlineBlank
+import androidx.compose.material.icons.rounded.CheckBox
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -92,6 +90,7 @@ private fun PagerTodoTomorrow(
                                         }
                                     )
                                     Column(
+                                        modifier = Modifier.weight(1f),
                                         verticalArrangement = Arrangement.spacedBy(5.dp)
                                     ) {
                                         Row(
@@ -101,11 +100,13 @@ private fun PagerTodoTomorrow(
                                             CustomTextTitle(text = todoToday.todoTitle)
                                             CustomTextContent(text = convertLongToString(todoToday.todoDate))
                                         }
-                                        CustomTextContent(text = todoToday.todoContent)
+                                        CustomTextContent(
+                                            text = todoToday.todoContent,
+                                            isSingleLine = true
+                                        )
                                     }
-                                    Spacer(modifier = Modifier.weight(1f))
                                     CustomIconButton(
-                                        icon = Icons.Rounded.CalendarToday,
+                                        icon = Icons.Rounded.CheckBox,
                                         onClick = {}
                                     )
                                 }

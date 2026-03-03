@@ -1,5 +1,6 @@
 package com.a.todo.state
 
 data class StateHome(
-    val currentUser: String? = null
+    val currentUser: String? = null,
+    val cardAnonymousWarn: Boolean = true
 )

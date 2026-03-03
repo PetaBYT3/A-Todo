@@ -3,6 +3,7 @@ package com.a.todo.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.a.todo.event.EventHome
+import com.a.todo.local.DataStore
 import com.a.todo.services.FirebaseAuth
 import com.a.todo.services.ResponseAuth
 import com.a.todo.state.StateHome
@@ -11,25 +12,38 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ViewModelHome(
     private val firebaseAuth: FirebaseAuth,
+    private val dataStore: DataStore,
     private val snackBar: SnackBar
 ): ViewModel() {
     private val _state = MutableStateFlow(StateHome())
     val state = _state.onStart {
-
+        getAuthState()
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5_000),
         StateHome()
     )
 
+    private fun getAuthState() {
+        viewModelScope.launch {
+            firebaseAuth.getAuthState().collect { result ->
+                _state.update { it.copy(cardAnonymousWarn = result?.isAnonymous ?: true) }
+            }
+        }
+    }
+
     fun onEvent(eventHome: EventHome) {
         when (eventHome) {
             EventHome.ButtonSignOut -> {
                 buttonSignOut()
+            }
+            EventHome.CardAnonymousWarnButtonDismiss -> {
+                _state.update { it.copy(cardAnonymousWarn = false) }
             }
         }
     }

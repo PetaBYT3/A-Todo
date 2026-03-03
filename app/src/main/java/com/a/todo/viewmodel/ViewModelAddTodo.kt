@@ -4,15 +4,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.a.todo.event.EventAddTodo
 import com.a.todo.extension.getFutureDateByDaysAsLong
-import com.a.todo.local.Dao
 import com.a.todo.local.EntityTodo
 import com.a.todo.repository.RepositoryDatabase
 import com.a.todo.repository.ResponseDatabase
 import com.a.todo.state.StateAddTodo
 import com.a.todo.util.SnackBar
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -21,6 +22,9 @@ class ViewModelAddTodo(
     private val repositoryDatabase: RepositoryDatabase,
     private val snackBar: SnackBar
 ): ViewModel() {
+    private val _popBack = Channel<Unit>()
+    val popBack = _popBack.receiveAsFlow()
+
     private val _state = MutableStateFlow(StateAddTodo())
     val state = _state.onStart {
 
@@ -68,6 +72,8 @@ class ViewModelAddTodo(
                 when (result) {
                     is ResponseDatabase.Success -> {
                         snackBar.showSnackBar(result.messageSuccess)
+                        _popBack.send(Unit)
+                        resetState()
                     }
                     is ResponseDatabase.Failed -> {
                         snackBar.showSnackBar(result.messageFailed)
@@ -75,5 +81,9 @@ class ViewModelAddTodo(
                 }
             }
         }
+    }
+
+    private fun resetState() {
+        _state.update { StateAddTodo() }
     }
 }

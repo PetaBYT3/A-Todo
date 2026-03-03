@@ -1,7 +1,7 @@
 package com.a.todo.services
 
 import com.a.todo.extension.capitalizeEachWord
-import com.google.android.gms.common.api.Response
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.Dispatchers
@@ -81,6 +81,31 @@ class FirebaseAuth {
         try {
             firebaseAuth.signInAnonymously().await()
             emit(ResponseAuth.Success("Sign In Anonymously"))
+        } catch (e: Exception) {
+            emit(ResponseAuth.Failed(e.message.toString().capitalizeEachWord()))
+        }
+    }.flowOn(Dispatchers.IO)
+
+    fun bindAnonymousToEmail(
+        email: String,
+        password: String,
+        retypePassword: String
+    ): Flow <ResponseAuth> = flow {
+        try {
+            when {
+                email.isBlank() || password.isBlank() || retypePassword.isBlank() -> {
+                    emit(ResponseAuth.Failed("Please Fill All Text Field"))
+                    return@flow
+                }
+                password != retypePassword -> {
+                    emit(ResponseAuth.Failed("Password Not Match"))
+                    return@flow
+                }
+            }
+
+            val anonymousCredential = EmailAuthProvider.getCredential(email, password)
+            firebaseAuth.currentUser?.linkWithCredential(anonymousCredential)?.await()
+            emit(ResponseAuth.Success("Bind Success"))
         } catch (e: Exception) {
             emit(ResponseAuth.Failed(e.message.toString().capitalizeEachWord()))
         }

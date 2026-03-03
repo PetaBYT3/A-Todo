@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,17 +17,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.CalendarToday
 import androidx.compose.material.icons.rounded.CheckBox
-import androidx.compose.material.icons.rounded.Dangerous
-import androidx.compose.material.icons.rounded.Schedule
-import androidx.compose.material.icons.rounded.Task
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LoadingIndicator
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -140,6 +134,7 @@ private fun PagerAllTodo(
                                         }
                                     )
                                     Column(
+                                        modifier = Modifier.weight(1f),
                                         verticalArrangement = Arrangement.spacedBy(5.dp)
                                     ) {
                                         Row(
@@ -149,11 +144,13 @@ private fun PagerAllTodo(
                                             CustomTextTitle(text = todoToday.todoTitle)
                                             CustomTextContent(text = convertLongToString(todoToday.todoDate))
                                         }
-                                        CustomTextContent(text = todoToday.todoContent)
+                                        CustomTextContent(
+                                            text = todoToday.todoContent,
+                                            isSingleLine = true
+                                        )
                                     }
-                                    Spacer(modifier = Modifier.weight(1f))
                                     CustomIconButton(
-                                        icon = Icons.Rounded.Schedule,
+                                        icon = Icons.Rounded.CheckBox,
                                         onClick = {}
                                     )
                                 }
@@ -218,6 +215,7 @@ private fun PagerAllDone(
                                         }
                                     )
                                     Column(
+                                        modifier = Modifier.weight(1f),
                                         verticalArrangement = Arrangement.spacedBy(5.dp)
                                     ) {
                                         Row(
@@ -227,9 +225,11 @@ private fun PagerAllDone(
                                             CustomTextTitle(text = todoToday.todoTitle)
                                             CustomTextContent(text = convertLongToString(todoToday.todoDate))
                                         }
-                                        CustomTextContent(text = todoToday.todoContent)
+                                        CustomTextContent(
+                                            text = todoToday.todoContent,
+                                            isSingleLine = true
+                                        )
                                     }
-                                    Spacer(modifier = Modifier.weight(1f))
                                     CustomIconButton(
                                         icon = Icons.Rounded.CheckBox,
                                         onClick = {}
@@ -296,6 +296,7 @@ private fun PagerAllExpired(
                                         }
                                     )
                                     Column(
+                                        modifier = Modifier.weight(1f),
                                         verticalArrangement = Arrangement.spacedBy(5.dp)
                                     ) {
                                         Row(
@@ -305,11 +306,13 @@ private fun PagerAllExpired(
                                             CustomTextTitle(text = todoToday.todoTitle)
                                             CustomTextContent(text = convertLongToString(todoToday.todoDate))
                                         }
-                                        CustomTextContent(text = todoToday.todoContent)
+                                        CustomTextContent(
+                                            text = todoToday.todoContent,
+                                            isSingleLine = true
+                                        )
                                     }
-                                    Spacer(modifier = Modifier.weight(1f))
                                     CustomIconButton(
-                                        icon = Icons.Rounded.Dangerous,
+                                        icon = Icons.Rounded.CheckBox,
                                         onClick = {}
                                     )
                                 }

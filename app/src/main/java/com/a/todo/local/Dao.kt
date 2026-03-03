@@ -11,6 +11,9 @@ interface Dao {
     @Upsert
     suspend fun upsertTodo(todo: EntityTodo)
 
+    @Upsert
+    suspend fun upsertListTodo(listTodo: List<EntityTodo>)
+
     @Delete
     suspend fun delete(todo: EntityTodo)
 

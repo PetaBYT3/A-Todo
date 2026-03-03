@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -121,6 +120,7 @@ fun PagerToday(
                         }
                     )
                     Column(
+                        modifier = Modifier.weight(1f),
                         verticalArrangement = Arrangement.spacedBy(5.dp)
                     ) {
                         Row(
@@ -130,9 +130,11 @@ fun PagerToday(
                             CustomTextTitle(text = state.todoToDelete?.todoTitle ?: "")
                             CustomTextContent(text = convertLongToString(state.todoToDelete?.todoDate ?: 0))
                         }
-                        CustomTextContent(text = state.todoToDelete?.todoContent ?: "")
+                        CustomTextContent(
+                            text = state.todoToDelete?.todoContent ?: "",
+                            isSingleLine = true
+                        )
                     }
-                    Spacer(modifier = Modifier.weight(1f))
                     CustomIconButton(
                         icon = Icons.Rounded.CheckBox,
                         onClick = {}
@@ -192,6 +194,7 @@ private fun PagerTodo(
                                         }
                                     )
                                     Column(
+                                        modifier = Modifier.weight(1f),
                                         verticalArrangement = Arrangement.spacedBy(5.dp)
                                     ) {
                                         Row(
@@ -201,9 +204,11 @@ private fun PagerTodo(
                                             CustomTextTitle(text = todoToday.todoTitle)
                                             CustomTextContent(text = convertLongToString(todoToday.todoDate))
                                         }
-                                        CustomTextContent(text = todoToday.todoContent)
+                                        CustomTextContent(
+                                            text = todoToday.todoContent,
+                                            isSingleLine = true
+                                        )
                                     }
-                                    Spacer(modifier = Modifier.weight(1f))
                                     CustomIconButton(
                                         icon = Icons.Rounded.CheckBoxOutlineBlank,
                                         onClick = { onEvent(EventToday.BottomSheetMarkAsDoneVisibility(true, todoToday)) }
@@ -270,6 +275,7 @@ private fun PagerDone(
                                         }
                                     )
                                     Column(
+                                        modifier = Modifier.weight(1f),
                                         verticalArrangement = Arrangement.spacedBy(5.dp)
                                     ) {
                                         Row(
@@ -279,9 +285,11 @@ private fun PagerDone(
                                             CustomTextTitle(text = todoToday.todoTitle)
                                             CustomTextContent(text = convertLongToString(todoToday.todoDate))
                                         }
-                                        CustomTextContent(text = todoToday.todoContent)
+                                        CustomTextContent(
+                                            text = todoToday.todoContent,
+                                            isSingleLine = true
+                                        )
                                     }
-                                    Spacer(modifier = Modifier.weight(1f))
                                     CustomIconButton(
                                         icon = Icons.Rounded.CheckBox,
                                         onClick = {}

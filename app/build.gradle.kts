@@ -72,10 +72,14 @@ dependencies {
     //Koin
     implementation(libs.koin.android)
     implementation(libs.koin.compose)
+    implementation(libs.koin.worker)
 
     //DataStore
     implementation(libs.data.store.preferences)
     implementation(libs.androidx.datastore.core)
+
+    //Worker
+    implementation(libs.androidx.worker)
 
     //Room Database
     implementation(libs.room.runtime)
