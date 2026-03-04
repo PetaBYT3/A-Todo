@@ -46,7 +46,7 @@ class ViewModelMain(
                     authState != null && emailVerification is ResponseAuth.Failed -> {
                         _navigate.send(RoutePage.PageEmailVerification)
                     }
-                    false -> {
+                    authState?.isAnonymous == true -> {
                         _navigate.send(RoutePage.PageHome)
                     }
                     else -> {

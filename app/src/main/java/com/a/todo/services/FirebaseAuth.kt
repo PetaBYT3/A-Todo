@@ -23,9 +23,13 @@ sealed class ResponseAuth {
 class FirebaseAuth {
     private val firebaseAuth = FirebaseAuth.getInstance()
 
-    fun getAuthState(): Flow<FirebaseUser?> = callbackFlow {
+    fun getAuthState(): Flow<FirebaseUser> = callbackFlow {
         val authStateListener = FirebaseAuth.AuthStateListener { auth ->
-            trySend(auth.currentUser)
+            val currentUser = auth.currentUser
+
+            if (currentUser != null) {
+                trySend(currentUser)
+            }
         }
 
         firebaseAuth.addAuthStateListener(authStateListener)

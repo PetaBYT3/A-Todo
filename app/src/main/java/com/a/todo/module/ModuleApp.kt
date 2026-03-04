@@ -5,6 +5,7 @@ import com.a.todo.local.DataStore
 import com.a.todo.local.Database
 import com.a.todo.repository.RepositoryDatabase
 import com.a.todo.services.FirebaseAuth
+import com.a.todo.services.FirebaseFirestore
 import com.a.todo.util.SnackBar
 import com.a.todo.viewmodel.ViewModelAddTodo
 import com.a.todo.viewmodel.ViewModelAll
@@ -40,10 +41,14 @@ object ModuleApp {
 
     private val moduleServices = module {
         singleOf(::FirebaseAuth)
+        singleOf(::FirebaseFirestore)
+    }
+
+    private val moduleLocalDataStore = module {
+        singleOf(::DataStore)
     }
 
     private val moduleLocalDatabase = module {
-        singleOf(::DataStore)
         single {
             Room.databaseBuilder(
                 context = androidContext(),
@@ -67,6 +72,7 @@ object ModuleApp {
     fun getAllModules() = listOf(
         moduleViewModel,
         moduleServices,
+        moduleLocalDataStore,
         moduleLocalDatabase,
         moduleUtils,
         moduleWorker
