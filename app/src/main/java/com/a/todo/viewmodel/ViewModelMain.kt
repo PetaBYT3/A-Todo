@@ -40,11 +40,11 @@ class ViewModelMain(
                 Pair(authState, emailVerification)
             }.collect { (authState, emailVerification) ->
                 when {
-                    authState != null && emailVerification is ResponseAuth.Success -> {
+                    emailVerification is ResponseAuth.Success -> {
                         _navigate.send(RoutePage.PageHome)
                     }
-                    authState != null && emailVerification is ResponseAuth.Failed -> {
-                        _navigate.send(RoutePage.PageEmailVerification)
+                    emailVerification is ResponseAuth.Failed -> {
+                        _navigate.send(RoutePage.PageHome)
                     }
                     authState?.isAnonymous == true -> {
                         _navigate.send(RoutePage.PageHome)

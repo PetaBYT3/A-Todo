@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
@@ -90,17 +92,36 @@ private fun NavDisplayContainer(
     modifier: Modifier = Modifier,
     backStack: NavBackStack<NavKey>
 ) {
+    val transitionDuration = 300
     NavDisplay(
         modifier = modifier.fillMaxSize(),
         backStack = backStack,
         transitionSpec = {
-            slideInHorizontally { it } togetherWith slideOutHorizontally { -it }
+            slideInHorizontally(
+                initialOffsetX = { it },
+                animationSpec = tween(transitionDuration, easing = FastOutSlowInEasing)
+            ) togetherWith slideOutHorizontally(
+                targetOffsetX = { -it / 3 },
+                animationSpec = tween(transitionDuration, easing = FastOutSlowInEasing)
+            )
         },
         popTransitionSpec = {
-            slideInHorizontally { -it } togetherWith slideOutHorizontally { it }
+            slideInHorizontally(
+                initialOffsetX = { -it / 3 },
+                animationSpec = tween(transitionDuration, easing = FastOutSlowInEasing)
+            ) togetherWith slideOutHorizontally(
+                targetOffsetX = { it },
+                animationSpec = tween(transitionDuration, easing = FastOutSlowInEasing)
+            )
         },
         predictivePopTransitionSpec = {
-            slideInHorizontally { -it } togetherWith slideOutHorizontally { it }
+            slideInHorizontally(
+                initialOffsetX = { -it / 3 },
+                animationSpec = tween(transitionDuration, easing = FastOutSlowInEasing)
+            ) togetherWith slideOutHorizontally(
+                targetOffsetX = { it },
+                animationSpec = tween(transitionDuration, easing = FastOutSlowInEasing)
+            )
         },
         entryProvider = { navKey ->
             when (navKey) {

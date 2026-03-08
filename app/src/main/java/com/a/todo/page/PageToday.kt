@@ -1,112 +1,122 @@
-@file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@file:OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 
 package com.a.todo.page
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.CheckBox
 import androidx.compose.material.icons.rounded.CheckBoxOutlineBlank
+import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.Warning
-import androidx.compose.material3.Card
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.LoadingIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PrimaryTabRow
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
 import com.a.todo.design.CustomComposableBottomSheet
 import com.a.todo.design.CustomIconButton
-import com.a.todo.design.CustomSingleButtonGroup
 import com.a.todo.design.CustomTextContent
 import com.a.todo.design.CustomTextHeader
 import com.a.todo.design.CustomTextTitle
+import com.a.todo.design.innerWindowInsets
 import com.a.todo.event.EventToday
 import com.a.todo.extension.convertLongToString
+import com.a.todo.navigation.RoutePage
 import com.a.todo.repository.ResponseDatabase
 import com.a.todo.state.StateToday
 import com.a.todo.viewmodel.ViewModelToday
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
-@Preview(showBackground = true)
 @Composable
-fun PagerToday(
+fun PageToday(
+    backStack: NavBackStack<NavKey>,
+    drawerState: DrawerState,
     viewModel: ViewModelToday = koinViewModel()
 ) {
     val scope = rememberCoroutineScope()
     val state by viewModel.state.collectAsStateWithLifecycle()
     val onEvent = viewModel::onEvent
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(15.dp)
-    ) {
-        val buttonList = listOf("Todo", "Done")
-        var buttonGroupState by rememberSaveable { mutableStateOf(buttonList[0]) }
-        val pagerState = rememberPagerState(pageCount = { buttonList.size })
-        CustomSingleButtonGroup(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp),
-            buttonList = buttonList,
-            value = buttonGroupState,
-            onCheckedChange = {
-                buttonGroupState = it
-                scope.launch {
-                    pagerState.animateScrollToPage(buttonList.indexOf(it))
+    val scrollBehaviour = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    Scaffold(
+        modifier = Modifier.imePadding().nestedScroll(scrollBehaviour.nestedScrollConnection),
+        contentWindowInsets = innerWindowInsets(),
+        topBar = {
+            TopBar(
+                scrollBehavior = scrollBehaviour,
+                onNavigationClick = {
+                    scope.launch {
+                        drawerState.open()
+                    }
                 }
-            }
-        )
-        LaunchedEffect(pagerState.targetPage) {
-            buttonGroupState = buttonList[pagerState.targetPage]
+            )
+        },
+        content = { innerPadding ->
+            Content(
+                innerPadding = innerPadding,
+                state = state,
+                onEvent = onEvent
+            )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { backStack.add(RoutePage.PageAddTodo) }
+            )
         }
-        HorizontalPager(
-            modifier = Modifier.fillMaxSize(),
-            state = pagerState
-        ) { pager ->
-            when (pager) {
-                0 -> PagerTodo(
-                    state = state,
-                    onEvent = onEvent
-                )
-                1 -> PagerDone(
-                    state = state
-                )
-            }
-        }
-    }
+    )
 
     CustomComposableBottomSheet(
         isBottomSheetVisible = state.bottomSheetMarkAsDone,
         title = "Mark Todo as Done",
         content = {
-            Card(
+            ElevatedCard(
                 modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min)
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(15.dp),
-                    horizontalArrangement = Arrangement.spacedBy(15.dp),
+                    modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(20.dp),
+                    horizontalArrangement = Arrangement.spacedBy(20.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
@@ -153,7 +163,105 @@ fun PagerToday(
 }
 
 @Composable
-private fun PagerTodo(
+private fun TopBar(
+    scrollBehavior: TopAppBarScrollBehavior,
+    onNavigationClick: () -> Unit
+) {
+    LargeTopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            scrolledContainerColor = MaterialTheme.colorScheme.surface
+        ),
+        navigationIcon = {
+            CustomIconButton(
+                icon = Icons.Rounded.Menu,
+                onClick = { onNavigationClick.invoke() }
+            )
+        },
+        title = { Text(text = "Today") },
+        scrollBehavior = scrollBehavior
+    )
+}
+
+private enum class TabToday(
+    val icon: ImageVector,
+    val title: String
+) {
+    Todo(Icons.Rounded.CheckBoxOutlineBlank, "Todo"),
+    Done(Icons.Rounded.CheckBox, "Done")
+}
+
+@Composable
+private fun Content(
+    innerPadding: PaddingValues,
+    state: StateToday,
+    onEvent: (EventToday) -> Unit
+) {
+    val scope = rememberCoroutineScope()
+
+    Column(
+        modifier = Modifier.fillMaxSize().padding(innerPadding)
+    ) {
+        val tabs = TabToday.entries
+        val pagerState = rememberPagerState(
+            pageCount = { tabs.size }
+        )
+        PrimaryTabRow(
+            selectedTabIndex = pagerState.currentPage,
+            indicator = {
+                TabRowDefaults.PrimaryIndicator(
+                    modifier = Modifier.tabIndicatorOffset(pagerState.currentPage)
+                )
+            }
+        ) {
+            tabs.forEach { tab ->
+                Tab(
+                    icon = { Icon(tab.icon, null) },
+                    text = { Text(text = tab.title) },
+                    selected = pagerState.currentPage == tab.ordinal,
+                    onClick = {
+                        scope.launch {
+                            pagerState.animateScrollToPage(tab.ordinal)
+                        }
+                    }
+                )
+            }
+        }
+        HorizontalPager(
+            modifier = Modifier.weight(1f),
+            state = pagerState
+        ) { tab ->
+            when (tabs[tab]) {
+                TabToday.Todo -> TabTodo(
+                    state = state,
+                    onEvent = onEvent
+                )
+                TabToday.Done -> TabDone(
+                    state = state
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun FloatingActionButton(
+    onClick: () -> Unit
+) {
+    ExtendedFloatingActionButton(
+        icon = {
+            Icon(
+                imageVector = Icons.Rounded.Add,
+                contentDescription = null
+            )
+        },
+        text = { Text(text = "Add Todo") },
+        onClick = { onClick.invoke() }
+    )
+}
+
+@Composable
+private fun TabTodo(
     state: StateToday,
     onEvent: (EventToday) -> Unit
 ) {
@@ -163,7 +271,7 @@ private fun PagerTodo(
         when (state.todoTodoTodayResponse) {
             null -> {
                 LoadingIndicator(
-                    modifier = Modifier.align(Alignment.TopCenter)
+                    modifier = Modifier.align(Alignment.Center)
                 )
             }
             is ResponseDatabase.Success -> {
@@ -175,12 +283,12 @@ private fun PagerTodo(
                         items(
                             items = state.todoTodoTodayResponse.listTodo
                         ) { todoToday ->
-                            Card(
-                                modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min).padding(horizontal = 15.dp)
+                            Column(
+                                modifier = Modifier.clickable(enabled = true, onClick = {})
                             ) {
                                 Row(
-                                    modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(15.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(15.dp),
+                                    modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(20.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(20.dp),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Icon(
@@ -197,13 +305,8 @@ private fun PagerTodo(
                                         modifier = Modifier.weight(1f),
                                         verticalArrangement = Arrangement.spacedBy(5.dp)
                                     ) {
-                                        Row(
-                                            horizontalArrangement = Arrangement.spacedBy(5.dp),
-                                            verticalAlignment = Alignment.CenterVertically
-                                        ) {
-                                            CustomTextTitle(text = todoToday.todoTitle)
-                                            CustomTextContent(text = convertLongToString(todoToday.todoDate))
-                                        }
+                                        CustomTextTitle(text = todoToday.todoTitle)
+                                        CustomTextContent(text = convertLongToString(todoToday.todoDate))
                                         CustomTextContent(
                                             text = todoToday.todoContent,
                                             isSingleLine = true
@@ -219,14 +322,14 @@ private fun PagerTodo(
                     }
                 } else {
                     CustomTextHeader(
-                        modifier = Modifier.align(Alignment.TopCenter),
+                        modifier = Modifier.align(Alignment.Center),
                         text = "Nothing to do today"
                     )
                 }
             }
             is ResponseDatabase.Failed -> {
                 CustomTextHeader(
-                    modifier = Modifier.align(Alignment.TopCenter),
+                    modifier = Modifier.align(Alignment.Center),
                     text = state.todoTodoTodayResponse.messageFailed
                 )
             }
@@ -235,7 +338,7 @@ private fun PagerTodo(
 }
 
 @Composable
-private fun PagerDone(
+private fun TabDone(
     state: StateToday
 ) {
     Box(
@@ -244,7 +347,7 @@ private fun PagerDone(
         when (state.doneTodoTodayResponse) {
             null -> {
                 LoadingIndicator(
-                    modifier = Modifier.align(Alignment.TopCenter)
+                    modifier = Modifier.align(Alignment.Center)
                 )
             }
             is ResponseDatabase.Success -> {
@@ -256,12 +359,12 @@ private fun PagerDone(
                         items(
                             items = state.doneTodoTodayResponse.listTodo
                         ) { todoToday ->
-                            Card(
-                                modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min).padding(horizontal = 15.dp)
+                            Column(
+                                modifier = Modifier.clickable(enabled = true, onClick = {})
                             ) {
                                 Row(
-                                    modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(15.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(15.dp),
+                                    modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(20.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(20.dp),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Icon(
@@ -278,13 +381,8 @@ private fun PagerDone(
                                         modifier = Modifier.weight(1f),
                                         verticalArrangement = Arrangement.spacedBy(5.dp)
                                     ) {
-                                        Row(
-                                            horizontalArrangement = Arrangement.spacedBy(5.dp),
-                                            verticalAlignment = Alignment.CenterVertically
-                                        ) {
-                                            CustomTextTitle(text = todoToday.todoTitle)
-                                            CustomTextContent(text = convertLongToString(todoToday.todoDate))
-                                        }
+                                        CustomTextTitle(text = todoToday.todoTitle)
+                                        CustomTextContent(text = convertLongToString(todoToday.todoDate))
                                         CustomTextContent(
                                             text = todoToday.todoContent,
                                             isSingleLine = true
@@ -300,14 +398,14 @@ private fun PagerDone(
                     }
                 } else {
                     CustomTextHeader(
-                        modifier = Modifier.align(Alignment.TopCenter),
+                        modifier = Modifier.align(Alignment.Center),
                         text = "Not any task done today"
                     )
                 }
             }
             is ResponseDatabase.Failed -> {
                 CustomTextHeader(
-                    modifier = Modifier.align(Alignment.TopCenter),
+                    modifier = Modifier.align(Alignment.Center),
                     text = state.doneTodoTodayResponse.messageFailed
                 )
             }

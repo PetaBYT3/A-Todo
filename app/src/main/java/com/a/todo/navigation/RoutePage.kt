@@ -18,6 +18,15 @@ sealed interface RoutePage: NavKey {
     data object PageHome: RoutePage, NavKey
 
     @Serializable
+    data object PageToday: RoutePage, NavKey
+
+    @Serializable
+    data object PageTomorrow: RoutePage, NavKey
+
+    @Serializable
+    data object PageAll: RoutePage, NavKey
+
+    @Serializable
     data object PageAddTodo: RoutePage, NavKey
 
     @Serializable
