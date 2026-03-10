@@ -39,11 +39,14 @@ class ViewModelHome(
 
     fun onEvent(eventHome: EventHome) {
         when (eventHome) {
-            EventHome.ButtonSignOut -> {
-                buttonSignOut()
-            }
             EventHome.CardAnonymousWarnButtonDismiss -> {
                 _state.update { it.copy(cardAnonymousWarn = false) }
+            }
+            EventHome.BottomSheetSignOut -> {
+                _state.update { it.copy(bottomSheetSignOut = !it.bottomSheetSignOut) }
+            }
+            EventHome.ButtonSignOut -> {
+                buttonSignOut()
             }
         }
     }
@@ -52,12 +55,8 @@ class ViewModelHome(
         viewModelScope.launch {
             firebaseAuth.signOut().collect { result ->
                 when (result) {
-                    is ResponseAuth.Success -> {
-                        snackBar.showSnackBar(result.messageSuccess)
-                    }
-                    is ResponseAuth.Failed -> {
-                        snackBar.showSnackBar(result.messageFailed)
-                    }
+                    is ResponseAuth.Success -> snackBar.showSnackBar(result.messageSuccess)
+                    is ResponseAuth.Failed -> snackBar.showSnackBar(result.messageFailed)
                 }
             }
         }

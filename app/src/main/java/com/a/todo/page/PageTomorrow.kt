@@ -2,15 +2,14 @@
 
 package com.a.todo.page
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,7 +21,6 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material.icons.rounded.Timer
-import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -51,10 +49,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
+import com.a.todo.design.CustomComposableElevatedCard
 import com.a.todo.design.CustomIconButton
 import com.a.todo.design.CustomTextContent
 import com.a.todo.design.CustomTextHeader
-import com.a.todo.design.CustomTextTitle
 import com.a.todo.design.innerWindowInsets
 import com.a.todo.extension.convertLongToString
 import com.a.todo.navigation.RoutePage
@@ -137,7 +135,8 @@ private fun Content(
     val scope = rememberCoroutineScope()
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(innerPadding)
+        modifier = Modifier.fillMaxSize().padding(innerPadding),
+        verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         val tabs = TabTomorrow.entries
         val pagerState = rememberPagerState(
@@ -215,41 +214,33 @@ private fun TabTomorrow(
                         items(
                             items = state.todoTomorrowResponse.listTodo
                         ) { todoToday ->
-                            Column(
-                                modifier = Modifier.clickable(enabled = true, onClick = {})
+                            CustomComposableElevatedCard(
+                                modifier = Modifier.padding(horizontal = 15.dp),
+                                icon = Icons.Rounded.Timer,
+                                title = todoToday.todoTitle,
+                                onClick = {}
                             ) {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(20.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(20.dp),
-                                    verticalAlignment = Alignment.CenterVertically
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalArrangement = Arrangement.spacedBy(5.dp)
                                 ) {
-                                    Icon(
-                                        imageVector = Icons.Rounded.Warning,
-                                        contentDescription = null,
-                                        tint = when (todoToday.todoImportance) {
-                                            "Low" -> Color.Green
-                                            "Medium" -> Color.Yellow
-                                            "High" -> Color.Red
-                                            else -> Color.Unspecified
-                                        }
+                                    CustomTextContent(
+                                        text = todoToday.todoImportance,
+                                        isSingleLine = true
                                     )
-                                    Column(
-                                        modifier = Modifier.weight(1f),
-                                        verticalArrangement = Arrangement.spacedBy(5.dp)
-                                    ) {
-                                        CustomTextTitle(text = todoToday.todoTitle)
-                                        CustomTextContent(text = convertLongToString(todoToday.todoDate))
-                                        CustomTextContent(
-                                            text = todoToday.todoContent,
-                                            isSingleLine = true
-                                        )
-                                    }
-                                    CustomIconButton(
-                                        icon = Icons.Rounded.Timer,
-                                        onClick = {}
+                                    CustomTextContent(
+                                        text = convertLongToString(todoToday.todoDate),
+                                        isSingleLine = true
+                                    )
+                                    CustomTextContent(
+                                        text = todoToday.todoContent,
+                                        isSingleLine = true
                                     )
                                 }
                             }
+                        }
+                        item {
+                            Spacer(modifier = Modifier.height(100.dp))
                         }
                     }
                 } else {

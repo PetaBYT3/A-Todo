@@ -65,7 +65,7 @@ class ViewModelAddTodo(
     private fun buttonSaveTodo() {
         viewModelScope.launch {
             val entityTodo = EntityTodo(
-                todoImportance = _state.value.buttonGroupTodoImportance,
+                todoImportance = _state.value.radioButtonTodoImportance?.value ?: "",
                 todoDate = getFutureDateByDaysAsLong(_state.value.textTodoDay),
                 todoTitle = _state.value.textFieldTodoTitle,
                 todoContent = _state.value.textFieldTodoContent,

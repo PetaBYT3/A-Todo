@@ -20,10 +20,12 @@ fun CustomComposableElevatedCard(
     modifier: Modifier = Modifier,
     icon: ImageVector,
     title: String,
+    onClick: () -> Unit,
     content: @Composable ColumnScope.() -> Unit
 ) {
     ElevatedCard(
-        modifier = modifier
+        modifier = modifier,
+        onClick = { onClick.invoke() }
     ) {
         Column(
             modifier = Modifier.fillMaxSize().padding(20.dp),

@@ -8,7 +8,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,11 +18,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Person
-import androidx.compose.material.icons.rounded.QuestionMark
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
@@ -42,10 +40,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
-import com.a.todo.design.CustomButton
+import com.a.todo.design.CustomComposableElevatedCard
 import com.a.todo.design.CustomIconButton
 import com.a.todo.design.CustomTextContent
-import com.a.todo.design.CustomTextTitle
 import com.a.todo.design.innerWindowInsets
 import com.a.todo.event.ActionSettings
 import com.a.todo.state.StateSettings
@@ -114,56 +111,52 @@ private fun Content(
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         item {
-            ElevatedCard(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp)
+            CustomComposableElevatedCard(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp),
+                icon = Icons.Rounded.Person,
+                title = "Account",
+                onClick = {}
             ) {
                 Box(
-                    modifier = Modifier.padding(15.dp)
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     when {
                         state.currentUser == null -> {
                             LoadingIndicator(
-                                modifier = Modifier.align(Alignment.TopCenter)
+                                modifier = Modifier.align(Alignment.Center)
                             )
                         }
                         else -> {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(15.dp),
+                                horizontalArrangement = Arrangement.spacedBy(20.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Icon(
-                                    imageVector = when {
-                                        state.currentUser.isAnonymous -> Icons.Rounded.QuestionMark
-                                        else -> Icons.Rounded.Person
-                                    },
-                                    contentDescription = null
-                                )
-                                Column(
+                                CustomTextContent(
                                     modifier = Modifier.weight(1f),
-                                    verticalArrangement = Arrangement.spacedBy(5.dp)
-                                ) {
-                                    CustomTextTitle(
-                                        text = "Account",
-                                        isSingleLine = true
-                                    )
-                                    CustomTextContent(
-                                        text = when {
-                                            state.currentUser.isAnonymous -> "Anonymous"
-                                            else -> state.currentUser.email ?: "Email"
-                                        },
-                                        isSingleLine = true
-                                    )
-                                }
+                                    text = when {
+                                        state.currentUser.isAnonymous -> "Anonymous"
+                                        else -> state.currentUser.email ?: "Email"
+                                    },
+                                    isSingleLine = true
+                                )
                                 AnimatedVisibility(
                                     visible = state.currentUser.isAnonymous,
                                     enter = fadeIn(tween()),
                                     exit = fadeOut(tween())
                                 ) {
-                                    CustomButton(
-                                        text = "Bind Account",
-                                        onClick = {}
-                                    )
+                                    ElevatedCard(
+                                        colors = CardDefaults.elevatedCardColors(
+                                            containerColor = MaterialTheme.colorScheme.surface
+                                        ),
+                                        onClick = {  }
+                                    ) {
+                                        CustomTextContent(
+                                            modifier = Modifier.padding(15.dp),
+                                            text = "Bind Account",
+                                            isSingleLine = true
+                                        )
+                                    }
                                 }
                             }
                         }

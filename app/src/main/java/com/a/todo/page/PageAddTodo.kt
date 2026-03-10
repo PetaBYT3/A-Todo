@@ -128,6 +128,7 @@ private fun Content(
             modifier = Modifier.padding(horizontal = 15.dp),
             icon = Icons.Rounded.Warning,
             title = "Importance",
+            onClick = {}
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -155,7 +156,8 @@ private fun Content(
         CustomComposableElevatedCard(
             modifier = Modifier.padding(horizontal = 15.dp),
             icon = Icons.Rounded.DateRange,
-            title = "Date"
+            title = "Date",
+            onClick = {}
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),

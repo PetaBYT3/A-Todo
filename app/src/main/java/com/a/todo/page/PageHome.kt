@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CalendarToday
+import androidx.compose.material.icons.rounded.Logout
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material.icons.rounded.Settings
@@ -37,6 +38,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
+import com.a.todo.design.CustomComposableBottomSheet
+import com.a.todo.design.CustomComposableElevatedCard
+import com.a.todo.event.EventHome
 import com.a.todo.navigation.RoutePage
 import com.a.todo.viewmodel.ViewModelHome
 import kotlinx.coroutines.launch
@@ -93,6 +97,17 @@ fun PageHome(
                             }
                         }
                     )
+                    NavigationDrawerItem(
+                        icon = { Icon(Icons.Rounded.Logout, null) },
+                        label = { Text(text = "Sign Out") },
+                        selected = false,
+                        onClick = {
+                            scope.launch {
+                                drawerState.close()
+                                onEvent(EventHome.BottomSheetSignOut)
+                            }
+                        }
+                    )
                 }
             }
         }
@@ -122,4 +137,23 @@ fun PageHome(
             }
         }
     }
+
+    CustomComposableBottomSheet(
+        isBottomSheetVisible = state.bottomSheetSignOut,
+        title = "Sign Out",
+        content = {
+            CustomComposableElevatedCard(
+                icon = Icons.Rounded.Logout,
+                title = "Are You Sure You Want To Sign Out ?",
+                onClick = {}
+            ) { }
+        },
+        onCancel = {
+            onEvent(EventHome.BottomSheetSignOut)
+        },
+        onConfirm = {
+            onEvent(EventHome.BottomSheetSignOut)
+            onEvent(EventHome.ButtonSignOut)
+        }
+    )
 }

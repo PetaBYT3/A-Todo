@@ -2,15 +2,15 @@
 
 package com.a.todo.page
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,7 +22,7 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.CheckBox
 import androidx.compose.material.icons.rounded.CheckBoxOutlineBlank
 import androidx.compose.material.icons.rounded.Menu
-import androidx.compose.material.icons.rounded.Warning
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -52,10 +52,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import com.a.todo.design.CustomComposableBottomSheet
+import com.a.todo.design.CustomComposableElevatedCard
 import com.a.todo.design.CustomIconButton
 import com.a.todo.design.CustomTextContent
 import com.a.todo.design.CustomTextHeader
-import com.a.todo.design.CustomTextTitle
 import com.a.todo.design.innerWindowInsets
 import com.a.todo.event.EventToday
 import com.a.todo.extension.convertLongToString
@@ -108,38 +108,27 @@ fun PageToday(
         isBottomSheetVisible = state.bottomSheetMarkAsDone,
         title = "Mark Todo as Done",
         content = {
-            ElevatedCard(
-                onClick = {  }
+            CustomComposableElevatedCard(
+                modifier = Modifier,
+                icon = Icons.Rounded.CheckBoxOutlineBlank,
+                title = state.todoToDelete?.todoTitle ?: "",
+                onClick = {}
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(20.dp),
-                    horizontalArrangement = Arrangement.spacedBy(20.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(5.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Rounded.Warning,
-                        contentDescription = null,
-                        tint = when (state.todoToDelete?.todoImportance) {
-                            "Low" -> Color.Green
-                            "Medium" -> Color.Yellow
-                            "High" -> Color.Red
-                            else -> Color.Unspecified
-                        }
+                    CustomTextContent(
+                        text = state.todoToDelete?.todoImportance ?: "",
+                        isSingleLine = true
                     )
-                    Column(
-                        modifier = Modifier.weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(5.dp)
-                    ) {
-                        CustomTextTitle(text = state.todoToDelete?.todoTitle ?: "")
-                        CustomTextContent(text = convertLongToString(state.todoToDelete?.todoDate ?: 0))
-                        CustomTextContent(
-                            text = state.todoToDelete?.todoContent ?: "",
-                            isSingleLine = true
-                        )
-                    }
-                    CustomIconButton(
-                        icon = Icons.Rounded.CheckBox,
-                        onClick = {}
+                    CustomTextContent(
+                        text = convertLongToString(state.todoToDelete?.todoDate ?: 0),
+                        isSingleLine = true
+                    )
+                    CustomTextContent(
+                        text = state.todoToDelete?.todoContent ?: "",
+                        isSingleLine = true
                     )
                 }
             }
@@ -276,42 +265,49 @@ private fun TabTodo(
                         items(
                             items = state.todoTodoTodayResponse.listTodo
                         ) { todoToday ->
-                            ElevatedCard(
+                            CustomComposableElevatedCard(
                                 modifier = Modifier.padding(horizontal = 15.dp),
-                                onClick = {  }
+                                icon = Icons.Rounded.CheckBoxOutlineBlank,
+                                title = todoToday.todoTitle,
+                                onClick = {}
                             ) {
                                 Row(
-                                    modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(20.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(20.dp),
-                                    verticalAlignment = Alignment.CenterVertically
+                                    modifier = Modifier.fillMaxWidth()
                                 ) {
-                                    Icon(
-                                        imageVector = Icons.Rounded.Warning,
-                                        contentDescription = null,
-                                        tint = when (todoToday.todoImportance) {
-                                            "Low" -> Color.Green
-                                            "Medium" -> Color.Yellow
-                                            "High" -> Color.Red
-                                            else -> Color.Unspecified
-                                        }
-                                    )
                                     Column(
                                         modifier = Modifier.weight(1f),
                                         verticalArrangement = Arrangement.spacedBy(5.dp)
                                     ) {
-                                        CustomTextTitle(text = todoToday.todoTitle)
-                                        CustomTextContent(text = convertLongToString(todoToday.todoDate))
+                                        CustomTextContent(
+                                            text = todoToday.todoImportance,
+                                            isSingleLine = true
+                                        )
+                                        CustomTextContent(
+                                            text = convertLongToString(todoToday.todoDate),
+                                            isSingleLine = true
+                                        )
                                         CustomTextContent(
                                             text = todoToday.todoContent,
                                             isSingleLine = true
                                         )
                                     }
-                                    CustomIconButton(
-                                        icon = Icons.Rounded.CheckBoxOutlineBlank,
+                                    ElevatedCard(
+                                        colors = CardDefaults.elevatedCardColors(
+                                            containerColor = MaterialTheme.colorScheme.surface
+                                        ),
                                         onClick = { onEvent(EventToday.BottomSheetMarkAsDoneVisibility(true, todoToday)) }
-                                    )
+                                    ) {
+                                        CustomTextContent(
+                                            modifier = Modifier.padding(15.dp),
+                                            text = "Mark as Done",
+                                            isSingleLine = true
+                                        )
+                                    }
                                 }
                             }
+                        }
+                        item {
+                            Spacer(modifier = Modifier.height(100.dp))
                         }
                     }
                 } else {
@@ -353,41 +349,33 @@ private fun TabDone(
                         items(
                             items = state.doneTodoTodayResponse.listTodo
                         ) { todoToday ->
-                            Column(
-                                modifier = Modifier.clickable(enabled = true, onClick = {})
+                            CustomComposableElevatedCard(
+                                modifier = Modifier.padding(horizontal = 15.dp),
+                                icon = Icons.Rounded.CheckBox,
+                                title = todoToday.todoTitle,
+                                onClick = {}
                             ) {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(20.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(20.dp),
-                                    verticalAlignment = Alignment.CenterVertically
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalArrangement = Arrangement.spacedBy(5.dp)
                                 ) {
-                                    Icon(
-                                        imageVector = Icons.Rounded.Warning,
-                                        contentDescription = null,
-                                        tint = when (todoToday.todoImportance) {
-                                            "Low" -> Color.Green
-                                            "Medium" -> Color.Yellow
-                                            "High" -> Color.Red
-                                            else -> Color.Unspecified
-                                        }
+                                    CustomTextContent(
+                                        text = todoToday.todoImportance,
+                                        isSingleLine = true
                                     )
-                                    Column(
-                                        modifier = Modifier.weight(1f),
-                                        verticalArrangement = Arrangement.spacedBy(5.dp)
-                                    ) {
-                                        CustomTextTitle(text = todoToday.todoTitle)
-                                        CustomTextContent(text = convertLongToString(todoToday.todoDate))
-                                        CustomTextContent(
-                                            text = todoToday.todoContent,
-                                            isSingleLine = true
-                                        )
-                                    }
-                                    CustomIconButton(
-                                        icon = Icons.Rounded.CheckBox,
-                                        onClick = {}
+                                    CustomTextContent(
+                                        text = convertLongToString(todoToday.todoDate),
+                                        isSingleLine = true
+                                    )
+                                    CustomTextContent(
+                                        text = todoToday.todoContent,
+                                        isSingleLine = true
                                     )
                                 }
                             }
+                        }
+                        item {
+                            Spacer(modifier = Modifier.height(100.dp))
                         }
                     }
                 } else {
