@@ -9,6 +9,7 @@ import com.google.firebase.firestore.ServerTimestamp
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -40,10 +41,11 @@ class FirebaseFirestore(
     private val firestore = FirebaseFirestore.getInstance()
 
     private suspend fun firestoreRootRef(): DocumentReference = withContext(Dispatchers.IO) {
-        val currentUser = firebaseAuth.getAuthState()
+        val currentUser = firebaseAuth.getAuthState().filterNotNull().first()
+
         val rootRef = firestore
             .collection("todoCollection")
-            .document(currentUser.first().uid)
+            .document(currentUser.uid)
 
         return@withContext rootRef
     }

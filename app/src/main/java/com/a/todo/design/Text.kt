@@ -30,7 +30,7 @@ fun CustomTextTitle(
     Text(
         modifier = modifier,
         text = text,
-        style = MaterialTheme.typography.bodyMedium,
+        style = MaterialTheme.typography.bodyLarge,
         overflow = TextOverflow.Ellipsis,
         maxLines = if (isSingleLine) 1 else Int.MAX_VALUE
     )
@@ -45,7 +45,7 @@ fun CustomTextContent(
     Text(
         modifier = modifier,
         text = text,
-        style = MaterialTheme.typography.bodySmall,
+        style = MaterialTheme.typography.bodyMedium,
         overflow = TextOverflow.Ellipsis,
         maxLines = if (isSingleLine) 1 else Int.MAX_VALUE
     )

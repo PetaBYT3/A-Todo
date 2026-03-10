@@ -7,7 +7,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -49,8 +48,7 @@ private enum class DrawerTab(
 ) {
     Today(Icons.Rounded.CalendarToday, "Today"),
     Tomorrow(Icons.Rounded.Schedule, "Tomorrow"),
-    All(Icons.Rounded.Menu, "All"),
-    Settings(Icons.Rounded.Settings, "Settings")
+    All(Icons.Rounded.Menu, "All")
 }
 
 @Composable
@@ -69,8 +67,7 @@ fun PageHome(
         drawerContent = {
             ModalDrawerSheet() {
                 Column(
-                    modifier = Modifier.fillMaxSize().padding(15.dp),
-                    verticalArrangement = Arrangement.spacedBy(15.dp)
+                    modifier = Modifier.fillMaxSize().padding(15.dp)
                 ) {
                     DrawerTab.entries.forEach { tab ->
                         NavigationDrawerItem(
@@ -80,16 +77,22 @@ fun PageHome(
                             onClick = {
                                 scope.launch {
                                     drawerState.close()
-                                }.invokeOnCompletion {
-                                    if (tab == DrawerTab.Settings) {
-                                        backStack.add(RoutePage.PageSettings)
-                                    } else {
-                                        currentTab = tab
-                                    }
+                                    currentTab = tab
                                 }
                             }
                         )
                     }
+                    NavigationDrawerItem(
+                        icon = { Icon(Icons.Rounded.Settings, null) },
+                        label = { Text(text = "Settings") },
+                        selected = false,
+                        onClick = {
+                            scope.launch {
+                                drawerState.close()
+                                backStack.add(RoutePage.PageSettings)
+                            }
+                        }
+                    )
                 }
             }
         }
@@ -115,7 +118,6 @@ fun PageHome(
                         backStack = backStack,
                         drawerState = drawerState
                     )
-                    else -> {}
                 }
             }
         }

@@ -36,6 +36,9 @@ class ViewModelAddTodo(
 
     fun onEvent(eventAddTodo: EventAddTodo) {
         when (eventAddTodo) {
+            is EventAddTodo.RadioButtonTodoImportance -> {
+                _state.update { it.copy(radioButtonTodoImportance = eventAddTodo.todoImportance) }
+            }
             is EventAddTodo.ButtonGroupTodoImportance -> {
                 _state.update { it.copy(buttonGroupTodoImportance = eventAddTodo.todoImportance) }
             }

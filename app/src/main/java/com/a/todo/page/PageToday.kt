@@ -6,13 +6,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -37,7 +35,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
@@ -112,7 +109,7 @@ fun PageToday(
         title = "Mark Todo as Done",
         content = {
             ElevatedCard(
-                modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min)
+                onClick = {  }
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(20.dp),
@@ -133,13 +130,8 @@ fun PageToday(
                         modifier = Modifier.weight(1f),
                         verticalArrangement = Arrangement.spacedBy(5.dp)
                     ) {
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(5.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            CustomTextTitle(text = state.todoToDelete?.todoTitle ?: "")
-                            CustomTextContent(text = convertLongToString(state.todoToDelete?.todoDate ?: 0))
-                        }
+                        CustomTextTitle(text = state.todoToDelete?.todoTitle ?: "")
+                        CustomTextContent(text = convertLongToString(state.todoToDelete?.todoDate ?: 0))
                         CustomTextContent(
                             text = state.todoToDelete?.todoContent ?: "",
                             isSingleLine = true
@@ -200,31 +192,32 @@ private fun Content(
     val scope = rememberCoroutineScope()
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(innerPadding)
+        modifier = Modifier.fillMaxSize().padding(innerPadding),
+        verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         val tabs = TabToday.entries
         val pagerState = rememberPagerState(
             pageCount = { tabs.size }
         )
-        PrimaryTabRow(
-            selectedTabIndex = pagerState.currentPage,
-            indicator = {
-                TabRowDefaults.PrimaryIndicator(
-                    modifier = Modifier.tabIndicatorOffset(pagerState.currentPage)
-                )
-            }
+        ElevatedCard(
+            modifier = Modifier.padding(horizontal = 15.dp)
         ) {
-            tabs.forEach { tab ->
-                Tab(
-                    icon = { Icon(tab.icon, null) },
-                    text = { Text(text = tab.title) },
-                    selected = pagerState.currentPage == tab.ordinal,
-                    onClick = {
-                        scope.launch {
-                            pagerState.animateScrollToPage(tab.ordinal)
+            PrimaryTabRow(
+                containerColor = Color.Transparent,
+                selectedTabIndex = pagerState.currentPage,
+                divider = {}
+            ) {
+                tabs.forEach { tab ->
+                    Tab(
+                        text = { Text(text = tab.title) },
+                        selected = pagerState.currentPage == tab.ordinal,
+                        onClick = {
+                            scope.launch {
+                                pagerState.animateScrollToPage(tab.ordinal)
+                            }
                         }
-                    }
-                )
+                    )
+                }
             }
         }
         HorizontalPager(
@@ -283,8 +276,9 @@ private fun TabTodo(
                         items(
                             items = state.todoTodoTodayResponse.listTodo
                         ) { todoToday ->
-                            Column(
-                                modifier = Modifier.clickable(enabled = true, onClick = {})
+                            ElevatedCard(
+                                modifier = Modifier.padding(horizontal = 15.dp),
+                                onClick = {  }
                             ) {
                                 Row(
                                     modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(20.dp),

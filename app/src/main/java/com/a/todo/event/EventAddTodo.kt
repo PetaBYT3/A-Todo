@@ -3,6 +3,7 @@ package com.a.todo.event
 import com.a.todo.enumclass.TodoImportance
 
 sealed interface EventAddTodo {
+    data class RadioButtonTodoImportance(val todoImportance: TodoImportance): EventAddTodo
     data class ButtonGroupTodoImportance(val todoImportance: String): EventAddTodo
     data object ButtonIncreaseTodoDay: EventAddTodo
     data object ButtonDecreaseTodoDay: EventAddTodo

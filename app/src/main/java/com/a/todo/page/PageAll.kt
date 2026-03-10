@@ -25,6 +25,7 @@ import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.UpdateDisabled
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.DrawerState
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -35,7 +36,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
@@ -146,25 +146,25 @@ private fun Content(
         val pagerState = rememberPagerState(
             pageCount = { tabs.size }
         )
-        PrimaryTabRow(
-            selectedTabIndex = pagerState.currentPage,
-            indicator = {
-                TabRowDefaults.PrimaryIndicator(
-                    modifier = Modifier.tabIndicatorOffset(pagerState.currentPage)
-                )
-            }
+        ElevatedCard(
+            modifier = Modifier.padding(horizontal = 15.dp)
         ) {
-            tabs.forEach { tab ->
-                Tab(
-                    icon = { Icon(tab.icon, null) },
-                    text = { Text(text = tab.title) },
-                    selected = pagerState.currentPage == tab.ordinal,
-                    onClick = {
-                        scope.launch {
-                            pagerState.animateScrollToPage(tab.ordinal)
+            PrimaryTabRow(
+                containerColor = Color.Transparent,
+                selectedTabIndex = pagerState.currentPage,
+                divider = {}
+            ) {
+                tabs.forEach { tab ->
+                    Tab(
+                        text = { Text(text = tab.title) },
+                        selected = pagerState.currentPage == tab.ordinal,
+                        onClick = {
+                            scope.launch {
+                                pagerState.animateScrollToPage(tab.ordinal)
+                            }
                         }
-                    }
-                )
+                    )
+                }
             }
         }
         HorizontalPager(
