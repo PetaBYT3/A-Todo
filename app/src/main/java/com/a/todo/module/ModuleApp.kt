@@ -9,6 +9,7 @@ import com.a.todo.services.FirebaseFirestore
 import com.a.todo.util.SnackBar
 import com.a.todo.viewmodel.ViewModelAddTodo
 import com.a.todo.viewmodel.ViewModelAll
+import com.a.todo.viewmodel.ViewModelBackup
 import com.a.todo.viewmodel.ViewModelEmailVerification
 import com.a.todo.viewmodel.ViewModelHome
 import com.a.todo.viewmodel.ViewModelMain
@@ -38,6 +39,7 @@ object ModuleApp {
         viewModelOf(::ViewModelAll)
         viewModelOf(::ViewModelAddTodo)
         viewModelOf(::ViewModelSettings)
+        viewModelOf(::ViewModelBackup)
         viewModelOf(::ViewModelRestore)
     }
 

@@ -28,6 +28,7 @@ import androidx.navigation3.ui.NavDisplay
 import com.a.todo.design.rootWindowInsets
 import com.a.todo.navigation.RoutePage
 import com.a.todo.page.PageAddTodo
+import com.a.todo.page.PageBackup
 import com.a.todo.page.PageEmailVerification
 import com.a.todo.page.PageHome
 import com.a.todo.page.PageRestore
@@ -164,6 +165,13 @@ private fun NavDisplayContainer(
                 is RoutePage.PageSettings -> {
                     NavEntry(navKey) {
                         PageSettings(
+                            backStack = backStack
+                        )
+                    }
+                }
+                is RoutePage.PageBackup -> {
+                    NavEntry(navKey) {
+                        PageBackup(
                             backStack = backStack
                         )
                     }

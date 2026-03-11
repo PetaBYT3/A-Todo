@@ -174,17 +174,28 @@ private fun Content(
         data class DataClassSettings(
             val icon: ImageVector,
             val title: String,
+            val content: @Composable () -> Unit,
             val onClick: () -> Unit
         )
         val listSettings = listOf(
             DataClassSettings(
                 icon = Icons.Rounded.Backup,
                 title = "Backup",
-                onClick = { onAction(ActionSettings.TestBackupData) }
+                content = {
+                    CustomTextContent(
+                        text = "Secure your tasks in the Cloud to prevent data loss when switching devices."
+                    )
+                },
+                onClick = { backStack.add(RoutePage.PageBackup) }
             ),
             DataClassSettings(
                 icon = Icons.Rounded.Restore,
                 title = "Restore",
+                content = {
+                    CustomTextContent(
+                        text = "Retrieve your latest saved tasks from the Cloud and sync them to this device."
+                    )
+                },
                 onClick = { backStack.add(RoutePage.PageRestore) }
             )
         )
@@ -196,7 +207,9 @@ private fun Content(
                 icon = settings.icon,
                 title = settings.title,
                 onClick = { settings.onClick.invoke() }
-            ) { }
+            ) {
+                settings.content.invoke()
+            }
         }
     }
 }

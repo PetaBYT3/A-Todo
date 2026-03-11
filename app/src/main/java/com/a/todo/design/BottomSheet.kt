@@ -28,6 +28,61 @@ fun CustomComposableBottomSheet(
     isBottomSheetVisible: Boolean,
     title: String,
     content: @Composable () -> Unit,
+    onCancel: () -> Unit
+) {
+    val scope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
+
+    if (isBottomSheetVisible) {
+        ModalBottomSheet(
+            sheetState = sheetState,
+            onDismissRequest = { onCancel.invoke() }
+        ) {
+            Column(
+                modifier = Modifier.padding(horizontal = 15.dp),
+                verticalArrangement = Arrangement.spacedBy(15.dp)
+            ) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleLargeEmphasized,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1
+                )
+                Column(
+                    modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min)
+                ) {
+                    content()
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(15.dp)
+                ) {
+                    Spacer(modifier = Modifier.weight(1f))
+                    CustomButton(
+                        text = "Done",
+                        onClick = {
+                            scope.launch {
+                                sheetState.hide()
+                            }.invokeOnCompletion {
+                                if (!sheetState.isVisible) {
+                                    onCancel.invoke()
+                                }
+                            }
+                        }
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun CustomConfirmationBottomSheet(
+    isBottomSheetVisible: Boolean,
+    title: String,
+    content: @Composable () -> Unit,
     onCancel: () -> Unit,
     onConfirm: () -> Unit
 ) {

@@ -34,10 +34,18 @@ fun convertLongToString(timeMillis: Long): String {
     return localDate.format(formatter)
 }
 
-fun convertDateToString(date: Date?): String {
+fun convertDateToStringDate(date: Date?): String {
     val instant = date?.toInstant() ?: return "Wait"
     val localDateTime = instant.atZone(ZoneId.systemDefault()).toLocalDateTime()
-    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy at HH:mm", Locale.getDefault())
+    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault())
+
+    return localDateTime.format(formatter)
+}
+
+fun convertDateToStringTime(date: Date?): String {
+    val instant = date?.toInstant() ?: return "Wait"
+    val localDateTime = instant.atZone(ZoneId.systemDefault()).toLocalDateTime()
+    val formatter = DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
 
     return localDateTime.format(formatter)
 }

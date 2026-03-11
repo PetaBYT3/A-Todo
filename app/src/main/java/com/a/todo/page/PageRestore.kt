@@ -43,7 +43,8 @@ import com.a.todo.design.CustomIconButton
 import com.a.todo.design.CustomTextContent
 import com.a.todo.design.innerWindowInsets
 import com.a.todo.event.ActionRestore
-import com.a.todo.extension.convertDateToString
+import com.a.todo.extension.convertDateToStringDate
+import com.a.todo.extension.convertDateToStringTime
 import com.a.todo.services.ResponseFirestore
 import com.a.todo.state.StateRestore
 import com.a.todo.viewmodel.ViewModelRestore
@@ -137,7 +138,7 @@ private fun Content(
                             )
                             val lastSync = state.todoCloudDescription.todoCloudDescription?.lastSync
                             CustomTextContent(
-                                text = "Last Sync : ${convertDateToString(lastSync)}",
+                                text = "Last Sync : ${convertDateToStringDate(lastSync)} at ${convertDateToStringTime(lastSync)}",
                                 isSingleLine = true
                             )
                         }

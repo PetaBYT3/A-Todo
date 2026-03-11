@@ -24,5 +24,8 @@ sealed interface RoutePage: NavKey {
     data object PageSettings: RoutePage, NavKey
 
     @Serializable
+    data object PageBackup: RoutePage, NavKey
+
+    @Serializable
     data object PageRestore: RoutePage, NavKey
 }

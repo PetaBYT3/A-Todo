@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 
 package com.a.todo.page
 
@@ -20,7 +20,10 @@ import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
@@ -38,8 +41,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
-import com.a.todo.design.CustomComposableBottomSheet
 import com.a.todo.design.CustomComposableElevatedCard
+import com.a.todo.design.CustomConfirmationBottomSheet
 import com.a.todo.design.CustomTextContent
 import com.a.todo.event.EventHome
 import com.a.todo.navigation.RoutePage
@@ -74,10 +77,15 @@ fun PageHome(
                 Column(
                     modifier = Modifier.fillMaxSize().padding(15.dp)
                 ) {
+                    Text(
+                        modifier = Modifier.padding(vertical = 20.dp),
+                        text = "A Todo",
+                        style = MaterialTheme.typography.titleLargeEmphasized
+                    )
                     DrawerTab.entries.forEach { tab ->
                         NavigationDrawerItem(
                             icon = { Icon(tab.icon, null) },
-                            label = { Text(text = tab.title) },
+                            label = { CustomTextContent(text = tab.title) },
                             selected = currentTab == tab,
                             onClick = {
                                 scope.launch {
@@ -87,9 +95,12 @@ fun PageHome(
                             }
                         )
                     }
+                    HorizontalDivider(
+                        modifier = Modifier.padding(vertical = 15.dp)
+                    )
                     NavigationDrawerItem(
                         icon = { Icon(Icons.Rounded.Settings, null) },
-                        label = { Text(text = "Settings") },
+                        label = { CustomTextContent(text = "Settings") },
                         selected = false,
                         onClick = {
                             scope.launch {
@@ -100,7 +111,7 @@ fun PageHome(
                     )
                     NavigationDrawerItem(
                         icon = { Icon(Icons.Rounded.Logout, null) },
-                        label = { Text(text = "Sign Out") },
+                        label = { CustomTextContent(text = "Sign Out") },
                         selected = false,
                         onClick = {
                             scope.launch {
@@ -109,6 +120,7 @@ fun PageHome(
                             }
                         }
                     )
+
                 }
             }
         }
@@ -139,7 +151,7 @@ fun PageHome(
         }
     }
 
-    CustomComposableBottomSheet(
+    CustomConfirmationBottomSheet(
         isBottomSheetVisible = state.bottomSheetSignOut,
         title = "Sign Out",
         content = {
