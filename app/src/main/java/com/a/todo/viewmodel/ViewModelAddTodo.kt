@@ -10,6 +10,7 @@ import com.a.todo.repository.ResponseDatabase
 import com.a.todo.state.StateAddTodo
 import com.a.todo.util.SnackBar
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
@@ -76,6 +77,7 @@ class ViewModelAddTodo(
                     is ResponseDatabase.Success -> {
                         snackBar.showSnackBar(result.messageSuccess)
                         _popBack.send(Unit)
+                        delay(500)
                         resetState()
                     }
                     is ResponseDatabase.Failed -> {

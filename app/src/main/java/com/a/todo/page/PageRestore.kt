@@ -1,8 +1,11 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 
 package com.a.todo.page
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,9 +15,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Restore
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.LargeTopAppBar
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -23,6 +29,7 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,18 +39,20 @@ import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import com.a.todo.design.CustomButton
 import com.a.todo.design.CustomComposableElevatedCard
-import com.a.todo.design.CustomOutlinedButton
+import com.a.todo.design.CustomIconButton
 import com.a.todo.design.CustomTextContent
 import com.a.todo.design.innerWindowInsets
-import com.a.todo.event.ActionRestoreData
-import com.a.todo.state.StateRestoreData
-import com.a.todo.viewmodel.ViewModelRestoreData
+import com.a.todo.event.ActionRestore
+import com.a.todo.extension.convertDateToString
+import com.a.todo.services.ResponseFirestore
+import com.a.todo.state.StateRestore
+import com.a.todo.viewmodel.ViewModelRestore
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun PageRestoreData(
+fun PageRestore(
     backStack: NavBackStack<NavKey>,
-    viewModel: ViewModelRestoreData = koinViewModel()
+    viewModel: ViewModelRestore = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val onAction = viewModel::onAction
@@ -56,8 +65,8 @@ fun PageRestoreData(
         contentWindowInsets = innerWindowInsets(),
         topBar = {
             TopBar(
-                backStack = backStack,
-                scrollBehavior = scrollBehaviour
+                scrollBehavior = scrollBehaviour,
+                onClick = { backStack.removeAt(backStack.lastIndex) }
             )
         },
         content = { innerPadding ->
@@ -72,14 +81,20 @@ fun PageRestoreData(
 
 @Composable
 private fun TopBar(
-    backStack: NavBackStack<NavKey>,
-    scrollBehavior: TopAppBarScrollBehavior
+    scrollBehavior: TopAppBarScrollBehavior,
+    onClick: () -> Unit
 ) {
     LargeTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.surface,
             scrolledContainerColor = MaterialTheme.colorScheme.surface
         ),
+        navigationIcon = {
+            CustomIconButton(
+                icon = Icons.Rounded.ArrowBack,
+                onClick = { onClick.invoke() }
+            )
+        },
         title = { Text(text = "Restore") },
         scrollBehavior = scrollBehavior
     )
@@ -88,42 +103,58 @@ private fun TopBar(
 @Composable
 private fun Content(
     innerPadding: PaddingValues,
-    state: StateRestoreData,
-    onAction: (ActionRestoreData) -> Unit
+    state: StateRestore,
+    onAction: (ActionRestore) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize().padding(innerPadding).verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         CustomComposableElevatedCard(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp).animateContentSize(tween()),
             icon = Icons.Rounded.Restore,
             title = "Restore Data From Cloud",
             onClick = {}
         ) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(5.dp)
+            Box(
+                modifier = Modifier.fillMaxWidth()
             ) {
-                CustomTextContent(
-                    text = "Total Todo :",
-                    isSingleLine = true
-                )
-                CustomTextContent(
-                    text = "Last Sync : ",
-                    isSingleLine = true
-                )
+                when (state.todoCloudDescription) {
+                    null -> {
+                        LoadingIndicator(
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
+                    is ResponseFirestore.Success -> {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(5.dp)
+                        ) {
+                            val totalTodo = state.todoCloudDescription.todoCloudDescription?.totalTodo ?: ""
+                            CustomTextContent(
+                                text = "Total Todo : $totalTodo",
+                                isSingleLine = true
+                            )
+                            val lastSync = state.todoCloudDescription.todoCloudDescription?.lastSync
+                            CustomTextContent(
+                                text = "Last Sync : ${convertDateToString(lastSync)}",
+                                isSingleLine = true
+                            )
+                        }
+                    }
+                    is ResponseFirestore.Failed -> {
+                        CustomTextContent(
+                            modifier = Modifier.align(Alignment.Center),
+                            text = state.todoCloudDescription.messageFailed
+                        )
+                    }
+                }
             }
         }
         CustomButton(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp),
             text = "Restore",
-            onClick = {}
-        )
-        CustomOutlinedButton(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp),
-            text = "Skip",
-            onClick = {}
+            onClick = { onAction(ActionRestore.ButtonRestoreData) }
         )
     }
 }
@@ -133,7 +164,7 @@ private fun Content(
 private fun Preview() {
     Content(
         innerPadding = PaddingValues(0.dp),
-        state = StateRestoreData(),
+        state = StateRestore(),
         onAction = {}
     )
 }

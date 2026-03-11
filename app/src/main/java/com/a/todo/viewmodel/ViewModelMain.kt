@@ -10,7 +10,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.shareIn
@@ -25,35 +24,32 @@ class ViewModelMain(
 
     private val _navigate = Channel<RoutePage>()
     val navigate = _navigate.receiveAsFlow().onStart {
-        initializeAuth()
+        initializeAccount()
     }.shareIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5_000)
     )
 
-    private fun initializeAuth() {
+    private fun initializeAccount() {
         viewModelScope.launch {
-            combine(
-                firebaseAuth.getAuthState(),
-                firebaseAuth.checkEmailVerification()
-            ) { authState, emailVerification ->
-                Pair(authState, emailVerification)
-            }.collect { (authState, emailVerification) ->
+            firebaseAuth.getAuthState().collect { authState ->
                 when {
+                    authState != null && !authState.isAnonymous -> {
+                        firebaseAuth.checkEmailVerification().collect { emailVerification ->
+                            when (emailVerification) {
+                                is ResponseAuth.Success -> _navigate.send(RoutePage.PageHome)
+                                is ResponseAuth.Failed -> _navigate.send(RoutePage.PageEmailVerification)
+                            }
+                        }
+                    }
                     authState != null && authState.isAnonymous -> {
                         _navigate.send(RoutePage.PageHome)
-                    }
-                    authState != null && emailVerification is ResponseAuth.Success -> {
-                        _navigate.send(RoutePage.PageHome)
-                    }
-                    authState != null && emailVerification is ResponseAuth.Failed -> {
-                        _navigate.send(RoutePage.PageEmailVerification)
                     }
                     else -> {
                         _navigate.send(RoutePage.PageSignIn)
                     }
                 }
-                delay(2_000)
+                delay(1_000)
                 _isInitialized.update { false }
             }
         }

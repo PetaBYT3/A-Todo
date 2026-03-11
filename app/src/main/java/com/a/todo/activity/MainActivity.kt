@@ -30,6 +30,7 @@ import com.a.todo.navigation.RoutePage
 import com.a.todo.page.PageAddTodo
 import com.a.todo.page.PageEmailVerification
 import com.a.todo.page.PageHome
+import com.a.todo.page.PageRestore
 import com.a.todo.page.PageSettings
 import com.a.todo.page.PageSignIn
 import com.a.todo.page.PageSignUp
@@ -163,6 +164,13 @@ private fun NavDisplayContainer(
                 is RoutePage.PageSettings -> {
                     NavEntry(navKey) {
                         PageSettings(
+                            backStack = backStack
+                        )
+                    }
+                }
+                is RoutePage.PageRestore -> {
+                    NavEntry(navKey) {
+                        PageRestore(
                             backStack = backStack
                         )
                     }

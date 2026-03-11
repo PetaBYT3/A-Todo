@@ -7,6 +7,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Date
 import java.util.Locale
 
 fun getFutureDateByDaysAsLong(days: Int): Long {
@@ -31,6 +32,14 @@ fun convertLongToString(timeMillis: Long): String {
     val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault())
 
     return localDate.format(formatter)
+}
+
+fun convertDateToString(date: Date?): String {
+    val instant = date?.toInstant() ?: return "Wait"
+    val localDateTime = instant.atZone(ZoneId.systemDefault()).toLocalDateTime()
+    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy at HH:mm", Locale.getDefault())
+
+    return localDateTime.format(formatter)
 }
 
 fun getDelayUntilMidnight(): Long {

@@ -40,6 +40,7 @@ import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import com.a.todo.design.CustomComposableBottomSheet
 import com.a.todo.design.CustomComposableElevatedCard
+import com.a.todo.design.CustomTextContent
 import com.a.todo.event.EventHome
 import com.a.todo.navigation.RoutePage
 import com.a.todo.viewmodel.ViewModelHome
@@ -144,9 +145,13 @@ fun PageHome(
         content = {
             CustomComposableElevatedCard(
                 icon = Icons.Rounded.Logout,
-                title = "Are You Sure You Want To Sign Out ?",
+                title = "Sign Out ?",
                 onClick = {}
-            ) { }
+            ) {
+                CustomTextContent(
+                    text = "Are you sure you want to sign out ?"
+                )
+            }
         },
         onCancel = {
             onEvent(EventHome.BottomSheetSignOut)

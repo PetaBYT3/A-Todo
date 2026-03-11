@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Password
 import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.ElevatedCard
@@ -15,8 +14,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MotionScheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -90,28 +87,34 @@ fun CustomPasswordTextField(
     MaterialTheme(
         motionScheme = MotionScheme.standard()
     ) {
-        OutlinedTextField(
-            modifier = modifier,
-            value = value,
-            onValueChange = { onValueChange(it) },
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Rounded.Password,
-                    contentDescription = null
-                )
-            },
-            placeholder = { Text(text = placeholder) },
-            trailingIcon = {
-                IconButton(
-                    onClick = { isPasswordVisible = !isPasswordVisible }
-                ) {
-                    Icon(
-                        imageVector = if (isPasswordVisible) Icons.Rounded.VisibilityOff else Icons.Rounded.Visibility,
-                        contentDescription = null
-                    )
-                }
-            },
-            visualTransformation = if (isPasswordVisible) PasswordVisualTransformation() else VisualTransformation.None,
-        )
+        ElevatedCard(
+            modifier = modifier.height(IntrinsicSize.Min)
+        ) {
+            TextField(
+                modifier = modifier,
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                ),
+                value = value,
+                onValueChange = { onValueChange(it) },
+                textStyle = MaterialTheme.typography.bodyMedium,
+                placeholder = { CustomTextContent(text = placeholder) },
+                trailingIcon = {
+                    IconButton(
+                        onClick = { isPasswordVisible = !isPasswordVisible }
+                    ) {
+                        Icon(
+                            imageVector = if (isPasswordVisible) Icons.Rounded.VisibilityOff else Icons.Rounded.Visibility,
+                            contentDescription = null
+                        )
+                    }
+                },
+                visualTransformation = if (isPasswordVisible) PasswordVisualTransformation() else VisualTransformation.None,
+            )
+        }
     }
 }
