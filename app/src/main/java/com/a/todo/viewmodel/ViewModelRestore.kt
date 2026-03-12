@@ -2,7 +2,7 @@ package com.a.todo.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.a.todo.event.ActionRestore
+import com.a.todo.contract.ActionRestore
 import com.a.todo.services.FirebaseFirestore
 import com.a.todo.services.ResponseFirestore
 import com.a.todo.state.StateRestore
@@ -41,12 +41,15 @@ class ViewModelRestore(
             ActionRestore.ButtonRestoreData -> {
                 buttonRestoreData()
             }
+            ActionRestore.ButtonDeleteDataOnLocal -> {
+
+            }
         }
     }
 
     private fun buttonRestoreData() {
         viewModelScope.launch {
-            firebaseFirestore.syncFirestoreToLocal().onStart {
+            firebaseFirestore.restoreFirestoreToLocal().onStart {
                 _state.update { it.copy(isButtonRestoreLoading = true) }
             }.onCompletion {
                 _state.update { it.copy(isButtonRestoreLoading = false) }

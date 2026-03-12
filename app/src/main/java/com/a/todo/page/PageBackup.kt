@@ -1,8 +1,9 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 
 package com.a.todo.page
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -16,12 +17,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ArrowForward
 import androidx.compose.material.icons.rounded.Backup
+import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeTopAppBar
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -42,9 +46,14 @@ import com.a.todo.contract.StateBackup
 import com.a.todo.design.CustomButton
 import com.a.todo.design.CustomComposableBottomSheet
 import com.a.todo.design.CustomComposableElevatedCard
+import com.a.todo.design.CustomConfirmationBottomSheet
 import com.a.todo.design.CustomIconButton
+import com.a.todo.design.CustomOutlinedButton
 import com.a.todo.design.CustomTextContent
 import com.a.todo.design.innerWindowInsets
+import com.a.todo.extension.convertDateToStringDate
+import com.a.todo.extension.convertDateToStringTime
+import com.a.todo.services.ResponseFirestore
 import com.a.todo.viewmodel.ViewModelBackup
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -109,6 +118,25 @@ fun PageBackup(
             }
         },
         onCancel = { onAction(ActionBackup.BottomSheetAutomaticBackup) }
+    )
+
+    CustomConfirmationBottomSheet(
+        isBottomSheetVisible = state.bottomSheetClearDataOnCloud,
+        title = "Clear Data On Cloud",
+        content = {
+            CustomComposableElevatedCard(
+                modifier = Modifier.fillMaxWidth(),
+                icon = Icons.Rounded.Delete,
+                title = "Delete",
+                onClick = {}
+            ) {
+                CustomTextContent(
+                    text = "Are you sure you want to delete all of your data on cloud ?, this action cannot be reserved"
+                )
+            }
+        },
+        onCancel = { onAction(ActionBackup.BottomSheetClearDataOnCloud) },
+        onConfirm = { onAction(ActionBackup.ButtonClearDataOnCloud) }
     )
 }
 
@@ -177,9 +205,40 @@ private fun Content(
                 CustomTextContent(
                     text = "Cloud"
                 )
-                CustomTextContent(
-                    text = "Current Todo Data On Local :"
-                )
+                Box(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    when (state.todoCloudDescription) {
+                        null -> {
+                            LoadingIndicator(
+                                modifier = Modifier.align(Alignment.Center)
+                            )
+                        }
+                        is ResponseFirestore.Success -> {
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalArrangement = Arrangement.spacedBy(5.dp)
+                            ) {
+                                val totalTodo = state.todoCloudDescription.todoCloudDescription?.totalTodo ?: "0"
+                                CustomTextContent(
+                                    text = "Total Todo : $totalTodo",
+                                    isSingleLine = true
+                                )
+                                val lastSync = state.todoCloudDescription.todoCloudDescription?.lastSync
+                                CustomTextContent(
+                                    text = "Last Backup : ${convertDateToStringDate(lastSync)} at ${convertDateToStringTime(lastSync)}",
+                                    isSingleLine = true
+                                )
+                            }
+                        }
+                        is ResponseFirestore.Failed -> {
+                            CustomTextContent(
+                                modifier = Modifier.align(Alignment.Center),
+                                text = state.todoCloudDescription.messageFailed
+                            )
+                        }
+                    }
+                }
             }
         }
         CustomComposableElevatedCard(
@@ -210,7 +269,14 @@ private fun Content(
         CustomButton(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp),
             text = "Backup Now",
-            onClick = {}
+            isLoading = state.isButtonBackupNowLoading,
+            onClick = { onAction(ActionBackup.ButtonBackup) }
+        )
+        CustomOutlinedButton(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp),
+            text = "Clear Data On Cloud",
+            isLoading = state.isButtonClearDataOnCloudLoading,
+            onClick = { onAction(ActionBackup.BottomSheetClearDataOnCloud) }
         )
     }
 }

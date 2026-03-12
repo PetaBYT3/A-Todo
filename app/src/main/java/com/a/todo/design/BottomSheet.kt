@@ -4,6 +4,7 @@ package com.a.todo.design
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,7 +28,7 @@ import kotlinx.coroutines.launch
 fun CustomComposableBottomSheet(
     isBottomSheetVisible: Boolean,
     title: String,
-    content: @Composable () -> Unit,
+    content: @Composable ColumnScope.() -> Unit,
     onCancel: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
@@ -134,6 +135,7 @@ fun CustomConfirmationBottomSheet(
                             scope.launch {
                                 sheetState.hide()
                             }.invokeOnCompletion {
+                                onCancel.invoke()
                                 if (!sheetState.isVisible) {
                                     onConfirm.invoke()
                                 }

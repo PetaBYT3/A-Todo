@@ -17,6 +17,9 @@ interface Dao {
     @Delete
     suspend fun delete(todo: EntityTodo)
 
+    @Query("DELETE FROM todoTable")
+    suspend fun deleteAllTodo()
+
     @Query("SELECT * FROM todoTable ORDER BY todoId DESC")
     fun getAllTodo(): Flow<List<EntityTodo>>
 }

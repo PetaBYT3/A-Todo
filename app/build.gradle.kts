@@ -100,6 +100,9 @@ dependencies {
     //Coil
     implementation(libs.coil.compose)
 
+    //Shimmer
+    implementation(libs.shimmer)
+
     //Material Icon
     implementation(libs.androidx.compose.material.iconsExtended)
 }

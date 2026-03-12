@@ -8,7 +8,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ServerTimestamp
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -50,21 +52,29 @@ class FirebaseFirestore(
         return@withContext rootRef
     }
 
-    fun getTodoCloudDescription(): Flow<ResponseFirestore> = flow {
-        try {
-            val snapshot = firestoreRootRef().get().await()
-            val todoCloudDescription = snapshot.toObject(TodoCloudDescription::class.java)
-
-            emit(ResponseFirestore.Success(
-                messageSuccess = "Success",
-                todoCloudDescription = todoCloudDescription
-            ))
-        } catch (e: Exception) {
-            emit(ResponseFirestore.Failed(e.message.toString().capitalizeEachWord()))
+    fun getTodoCloudDescription(): Flow<ResponseFirestore> = callbackFlow {
+        val todoCloudDescriptionListener = firestoreRootRef().addSnapshotListener { snapshot, exception ->
+            when {
+                snapshot != null -> {
+                    val todoCloudDescription = snapshot.toObject(TodoCloudDescription::class.java)
+                    trySend(
+                        ResponseFirestore.Success(
+                            messageSuccess = "Success",
+                            todoCloudDescription = todoCloudDescription
+                        )
+                    )
+                }
+                exception != null -> {
+                    trySend(ResponseFirestore.Failed(exception.message.toString().capitalizeEachWord()))
+                    close()
+                }
+            }
         }
+
+        awaitClose { todoCloudDescriptionListener.remove() }
     }.flowOn(Dispatchers.IO)
 
-    fun syncLocalToFirestore(): Flow<ResponseFirestore> = flow {
+    fun backupLocalToFirestore(): Flow<ResponseFirestore> = flow {
         try {
             val localTodo = dao.getAllTodo().first()
             val firestoreBatch = firestore.batch()
@@ -80,23 +90,41 @@ class FirebaseFirestore(
             }
 
             firestoreBatch.commit().await()
-            emit(ResponseFirestore.Success("Sync To Cloud Success"))
+            emit(ResponseFirestore.Success("Backup To Cloud Success"))
         } catch (e: Exception) {
             emit(ResponseFirestore.Failed(e.message.toString().capitalizeEachWord()))
         }
     }.flowOn(Dispatchers.IO)
 
-    fun syncFirestoreToLocal(): Flow<ResponseFirestore> = flow {
+    fun restoreFirestoreToLocal(): Flow<ResponseFirestore> = flow {
         try {
             val snapshot = firestoreRootRef().collection("todoList").get().await()
             val todoData = snapshot.toObjects(EntityTodo::class.java)
 
             if (todoData.isNotEmpty()) {
                 dao.upsertListTodo(todoData)
-                emit(ResponseFirestore.Success("Sync To Local Success"))
+                emit(ResponseFirestore.Success("Restore From Cloud Success"))
             } else {
                 emit(ResponseFirestore.Success("Todo Not Found In Cloud"))
             }
+        } catch (e: Exception) {
+            emit(ResponseFirestore.Failed(e.message.toString().capitalizeEachWord()))
+        }
+    }.flowOn(Dispatchers.IO)
+
+    fun clearDataOnFirestore(): Flow<ResponseFirestore> = flow {
+        try {
+            val firestoreBatch = firestore.batch()
+
+            val todoListCollection = firestoreRootRef().collection("todoList").get().await()
+
+            for (todo in todoListCollection) {
+                firestoreBatch.delete(todo.reference)
+            }
+            firestoreBatch.delete(firestoreRootRef())
+
+            firestoreBatch.commit().await()
+            emit(ResponseFirestore.Success("Data Removed"))
         } catch (e: Exception) {
             emit(ResponseFirestore.Failed(e.message.toString().capitalizeEachWord()))
         }

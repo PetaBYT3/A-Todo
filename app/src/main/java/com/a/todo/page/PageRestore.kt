@@ -37,12 +37,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
+import com.a.todo.contract.ActionRestore
 import com.a.todo.design.CustomButton
 import com.a.todo.design.CustomComposableElevatedCard
 import com.a.todo.design.CustomIconButton
+import com.a.todo.design.CustomOutlinedButton
 import com.a.todo.design.CustomTextContent
 import com.a.todo.design.innerWindowInsets
-import com.a.todo.event.ActionRestore
 import com.a.todo.extension.convertDateToStringDate
 import com.a.todo.extension.convertDateToStringTime
 import com.a.todo.services.ResponseFirestore
@@ -131,14 +132,14 @@ private fun Content(
                             modifier = Modifier.fillMaxWidth(),
                             verticalArrangement = Arrangement.spacedBy(5.dp)
                         ) {
-                            val totalTodo = state.todoCloudDescription.todoCloudDescription?.totalTodo ?: ""
+                            val totalTodo = state.todoCloudDescription.todoCloudDescription?.totalTodo ?: "0"
                             CustomTextContent(
                                 text = "Total Todo : $totalTodo",
                                 isSingleLine = true
                             )
                             val lastSync = state.todoCloudDescription.todoCloudDescription?.lastSync
                             CustomTextContent(
-                                text = "Last Sync : ${convertDateToStringDate(lastSync)} at ${convertDateToStringTime(lastSync)}",
+                                text = "Last Backup : ${convertDateToStringDate(lastSync)} at ${convertDateToStringTime(lastSync)}",
                                 isSingleLine = true
                             )
                         }
@@ -156,6 +157,11 @@ private fun Content(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp),
             text = "Restore",
             onClick = { onAction(ActionRestore.ButtonRestoreData) }
+        )
+        CustomOutlinedButton(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp),
+            text = "Clear Data On Local",
+            onClick = {}
         )
     }
 }

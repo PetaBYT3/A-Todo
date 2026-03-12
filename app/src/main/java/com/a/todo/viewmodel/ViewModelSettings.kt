@@ -41,7 +41,7 @@ class ViewModelSettings(
         when (actionSettings) {
             ActionSettings.TestBackupData -> {
                 viewModelScope.launch {
-                    firebaseFirestore.syncLocalToFirestore().collect {
+                    firebaseFirestore.backupLocalToFirestore().collect {
                         when (it) {
                             is ResponseFirestore.Success -> snackBar.showSnackBar(it.messageSuccess)
                             is ResponseFirestore.Failed -> snackBar.showSnackBar(it.messageFailed)
