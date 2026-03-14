@@ -41,7 +41,6 @@ import com.a.todo.contract.ActionRestore
 import com.a.todo.design.CustomButton
 import com.a.todo.design.CustomComposableElevatedCard
 import com.a.todo.design.CustomIconButton
-import com.a.todo.design.CustomOutlinedButton
 import com.a.todo.design.CustomTextContent
 import com.a.todo.design.innerWindowInsets
 import com.a.todo.extension.convertDateToStringDate
@@ -157,11 +156,6 @@ private fun Content(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp),
             text = "Restore",
             onClick = { onAction(ActionRestore.ButtonRestoreData) }
-        )
-        CustomOutlinedButton(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp),
-            text = "Clear Data On Local",
-            onClick = {}
         )
     }
 }

@@ -44,6 +44,7 @@ import androidx.navigation3.runtime.NavKey
 import com.a.todo.design.CustomComposableElevatedCard
 import com.a.todo.design.CustomConfirmationBottomSheet
 import com.a.todo.design.CustomTextContent
+import com.a.todo.design.CustomTextTitle
 import com.a.todo.event.EventHome
 import com.a.todo.navigation.RoutePage
 import com.a.todo.viewmodel.ViewModelHome
@@ -85,7 +86,7 @@ fun PageHome(
                     DrawerTab.entries.forEach { tab ->
                         NavigationDrawerItem(
                             icon = { Icon(tab.icon, null) },
-                            label = { CustomTextContent(text = tab.title) },
+                            label = { CustomTextTitle(text = tab.title) },
                             selected = currentTab == tab,
                             onClick = {
                                 scope.launch {
@@ -100,7 +101,7 @@ fun PageHome(
                     )
                     NavigationDrawerItem(
                         icon = { Icon(Icons.Rounded.Settings, null) },
-                        label = { CustomTextContent(text = "Settings") },
+                        label = { CustomTextTitle(text = "Settings") },
                         selected = false,
                         onClick = {
                             scope.launch {
@@ -111,7 +112,7 @@ fun PageHome(
                     )
                     NavigationDrawerItem(
                         icon = { Icon(Icons.Rounded.Logout, null) },
-                        label = { CustomTextContent(text = "Sign Out") },
+                        label = { CustomTextTitle(text = "Sign Out") },
                         selected = false,
                         onClick = {
                             scope.launch {

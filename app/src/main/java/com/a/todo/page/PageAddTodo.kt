@@ -44,15 +44,15 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
+import com.a.todo.contract.ActionAddTodo
+import com.a.todo.contract.StateAddTodo
 import com.a.todo.design.CustomComposableElevatedCard
 import com.a.todo.design.CustomIconButton
 import com.a.todo.design.CustomTextContent
 import com.a.todo.design.CustomTextField
 import com.a.todo.design.innerWindowInsets
 import com.a.todo.enumclass.TodoImportance
-import com.a.todo.event.EventAddTodo
 import com.a.todo.extension.getFutureDateByDaysAsString
-import com.a.todo.state.StateAddTodo
 import com.a.todo.viewmodel.ViewModelAddTodo
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -118,7 +118,7 @@ private fun Content(
     innerPadding: PaddingValues,
     backStack: NavBackStack<NavKey>,
     state: StateAddTodo,
-    onEvent: (EventAddTodo) -> Unit
+    onEvent: (ActionAddTodo) -> Unit
 ) {
     Column(
         modifier = Modifier.padding(innerPadding).verticalScroll(rememberScrollState()),
@@ -142,7 +142,7 @@ private fun Content(
                         colors = CardDefaults.elevatedCardColors(
                             containerColor = if (selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
                         ),
-                        onClick = { onEvent(EventAddTodo.RadioButtonTodoImportance(importance)) }
+                        onClick = { onEvent(ActionAddTodo.RadioButtonTodoImportance(importance)) }
                     ) {
                         CustomTextContent(
                             modifier = Modifier.padding(15.dp),
@@ -184,7 +184,7 @@ private fun Content(
                         colors = CardDefaults.elevatedCardColors(
                             containerColor = MaterialTheme.colorScheme.surface
                         ),
-                        onClick = { onEvent(EventAddTodo.ButtonDecreaseTodoDay) }
+                        onClick = { onEvent(ActionAddTodo.ButtonDecreaseTodoDay) }
                     ) {
                         Icon(
                             modifier = Modifier.padding(15.dp),
@@ -196,7 +196,7 @@ private fun Content(
                         colors = CardDefaults.elevatedCardColors(
                             containerColor = MaterialTheme.colorScheme.surface
                         ),
-                        onClick = { onEvent(EventAddTodo.ButtonIncreaseTodoDay) }
+                        onClick = { onEvent(ActionAddTodo.ButtonIncreaseTodoDay) }
                     ) {
                         Icon(
                             modifier = Modifier.padding(15.dp),
@@ -210,14 +210,14 @@ private fun Content(
         CustomTextField(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp),
             value = state.textFieldTodoTitle,
-            onValueChange = { onEvent(EventAddTodo.TextFieldTodoTitle(it)) },
+            onValueChange = { onEvent(ActionAddTodo.TextFieldTodoTitle(it)) },
             leadingIcon = Icons.Rounded.Abc,
             placeholder = "Title"
         )
         CustomTextField(
             modifier = Modifier.fillMaxWidth().height(200.dp).padding(horizontal = 15.dp),
             value = state.textFieldTodoContent,
-            onValueChange = { onEvent(EventAddTodo.TextFieldTodoContent(it)) },
+            onValueChange = { onEvent(ActionAddTodo.TextFieldTodoContent(it)) },
             leadingIcon = Icons.Rounded.Subtitles,
             placeholder = "Content"
         )
@@ -227,7 +227,7 @@ private fun Content(
 
 @Composable
 private fun FloatingActionButton(
-    onEvent: (EventAddTodo) -> Unit
+    onEvent: (ActionAddTodo) -> Unit
 ) {
     ExtendedFloatingActionButton(
         icon = {
@@ -237,7 +237,7 @@ private fun FloatingActionButton(
             )
         },
         text = { Text(text = "Save") },
-        onClick = { onEvent(EventAddTodo.ButtonSaveTodo) },
+        onClick = { onEvent(ActionAddTodo.ButtonSaveTodo) },
     )
 }
 

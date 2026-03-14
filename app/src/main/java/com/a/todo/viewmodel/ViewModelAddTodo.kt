@@ -2,12 +2,12 @@ package com.a.todo.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.a.todo.event.EventAddTodo
+import com.a.todo.contract.ActionAddTodo
+import com.a.todo.contract.StateAddTodo
 import com.a.todo.extension.getFutureDateByDaysAsLong
 import com.a.todo.local.EntityTodo
 import com.a.todo.repository.RepositoryDatabase
 import com.a.todo.repository.ResponseDatabase
-import com.a.todo.state.StateAddTodo
 import com.a.todo.util.SnackBar
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -35,29 +35,29 @@ class ViewModelAddTodo(
         StateAddTodo()
     )
 
-    fun onEvent(eventAddTodo: EventAddTodo) {
-        when (eventAddTodo) {
-            is EventAddTodo.RadioButtonTodoImportance -> {
-                _state.update { it.copy(radioButtonTodoImportance = eventAddTodo.todoImportance) }
+    fun onEvent(actionAddTodo: ActionAddTodo) {
+        when (actionAddTodo) {
+            is ActionAddTodo.RadioButtonTodoImportance -> {
+                _state.update { it.copy(radioButtonTodoImportance = actionAddTodo.todoImportance) }
             }
-            is EventAddTodo.ButtonGroupTodoImportance -> {
-                _state.update { it.copy(buttonGroupTodoImportance = eventAddTodo.todoImportance) }
+            is ActionAddTodo.ButtonGroupTodoImportance -> {
+                _state.update { it.copy(buttonGroupTodoImportance = actionAddTodo.todoImportance) }
             }
-            EventAddTodo.ButtonIncreaseTodoDay -> {
+            ActionAddTodo.ButtonIncreaseTodoDay -> {
                 _state.update { it.copy(textTodoDay = it.textTodoDay + 1) }
             }
-            EventAddTodo.ButtonDecreaseTodoDay -> {
+            ActionAddTodo.ButtonDecreaseTodoDay -> {
                 if (_state.value.textTodoDay >= 1) {
                     _state.update { it.copy(textTodoDay = it.textTodoDay - 1) }
                 }
             }
-            is EventAddTodo.TextFieldTodoTitle -> {
-                _state.update { it.copy(textFieldTodoTitle = eventAddTodo.todoTitle) }
+            is ActionAddTodo.TextFieldTodoTitle -> {
+                _state.update { it.copy(textFieldTodoTitle = actionAddTodo.todoTitle) }
             }
-            is EventAddTodo.TextFieldTodoContent -> {
-                _state.update { it.copy(textFieldTodoContent = eventAddTodo.todoContent) }
+            is ActionAddTodo.TextFieldTodoContent -> {
+                _state.update { it.copy(textFieldTodoContent = actionAddTodo.todoContent) }
             }
-            is EventAddTodo.ButtonSaveTodo -> {
+            is ActionAddTodo.ButtonSaveTodo -> {
                 buttonSaveTodo()
             }
         }

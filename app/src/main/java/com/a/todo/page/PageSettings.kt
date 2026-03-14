@@ -2,16 +2,20 @@
 
 package com.a.todo.page
 
+import android.content.pm.PackageManager
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,6 +23,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Backup
+import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.rounded.Feedback
+import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.Restore
 import androidx.compose.material3.CardDefaults
@@ -35,11 +42,11 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavBackStack
@@ -112,7 +119,8 @@ private fun Content(
     state: StateSettings,
     onAction: (ActionSettings) -> Unit
 ) {
-    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+
     LazyColumn(
         modifier = Modifier.fillMaxSize().padding(innerPadding),
         verticalArrangement = Arrangement.spacedBy(15.dp)
@@ -197,6 +205,50 @@ private fun Content(
                     )
                 },
                 onClick = { backStack.add(RoutePage.PageRestore) }
+            ),
+            DataClassSettings(
+                icon = Icons.Rounded.Delete,
+                title = "Delete All Data",
+                content = {
+                    CustomTextContent(
+                        text = "Permanently remove all tasks from this device. This cannot be undone."
+                    )
+                },
+                onClick = {  }
+            ),
+            DataClassSettings(
+                icon = Icons.Rounded.Feedback,
+                title = "Report and Feedback",
+                content = {
+                    CustomTextContent(
+                        text = "Help to improve by sharing your feedback or suggesting new features, and reporting known bugs."
+                    )
+                },
+                onClick = {  }
+            ),
+            DataClassSettings(
+                icon = Icons.Rounded.Info,
+                title = "About App",
+                content = {
+                    val packageInfo = context.packageManager.getPackageInfo(
+                        context.packageName,
+                        PackageManager.PackageInfoFlags.of(0)
+                    )
+                    val versionName = packageInfo.versionName
+                    val versionCode = packageInfo.longVersionCode
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(5.dp)
+                    ) {
+                        CustomTextContent(
+                            text = "Developer : Andrea Hussanini (andreahussanini.2103@gmail.com)"
+                        )
+                        CustomTextContent(
+                            text = "Version : $versionName ($versionCode)"
+                        )
+                    }
+                },
+                onClick = {  }
             )
         )
         items(
@@ -210,6 +262,9 @@ private fun Content(
             ) {
                 settings.content.invoke()
             }
+        }
+        item {
+            Spacer(modifier = Modifier.height(100.dp))
         }
     }
 }
