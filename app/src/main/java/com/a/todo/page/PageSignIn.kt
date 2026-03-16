@@ -5,7 +5,6 @@ package com.a.todo.page
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -13,7 +12,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Email
-import androidx.compose.material.icons.rounded.Password
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.Scaffold
@@ -29,6 +27,7 @@ import com.a.todo.design.CustomButton
 import com.a.todo.design.CustomOutlinedButton
 import com.a.todo.design.CustomPasswordTextField
 import com.a.todo.design.CustomTextField
+import com.a.todo.design.innerWindowInsets
 import com.a.todo.event.EventSignIn
 import com.a.todo.navigation.RoutePage
 import com.a.todo.state.StateSignIn
@@ -45,7 +44,7 @@ fun PageSignIn(
 
     Scaffold(
         modifier = Modifier.imePadding(),
-        contentWindowInsets = WindowInsets(0.dp),
+        contentWindowInsets = innerWindowInsets(),
         topBar = { TopBar() },
         content = { innerPadding ->
             Content(

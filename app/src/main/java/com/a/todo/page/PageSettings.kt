@@ -3,15 +3,9 @@
 package com.a.todo.page
 
 import android.content.pm.PackageManager
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,19 +15,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Backup
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Feedback
 import androidx.compose.material.icons.rounded.Info
-import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.Restore
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.LargeTopAppBar
-import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -42,7 +33,6 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -51,13 +41,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
+import com.a.todo.contract.ActionSettings
+import com.a.todo.contract.StateSettings
 import com.a.todo.design.CustomComposableElevatedCard
+import com.a.todo.design.CustomConfirmationBottomSheet
 import com.a.todo.design.CustomIconButton
 import com.a.todo.design.CustomTextContent
 import com.a.todo.design.innerWindowInsets
-import com.a.todo.event.ActionSettings
 import com.a.todo.navigation.RoutePage
-import com.a.todo.state.StateSettings
 import com.a.todo.viewmodel.ViewModelSettings
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -88,6 +79,25 @@ fun PageSettings(
                 onAction = onAction
             )
         }
+    )
+
+    CustomConfirmationBottomSheet(
+        isBottomSheetVisible = state.bottomSheetDeleteAllData,
+        title = "Delete All Data",
+        content = {
+            CustomComposableElevatedCard(
+                icon = Icons.Rounded.Delete,
+                title = "Are you sure ?",
+                content = {
+                    CustomTextContent(
+                        text = "All data will permanently deleted, you cant restore it except from cloud"
+                    )
+                },
+                onClick = {}
+            )
+        },
+        onCancel = { onAction(ActionSettings.BottomSheetDeleteAllData) },
+        onConfirm = { onAction(ActionSettings.ButtonDeleteAllData) }
     )
 }
 
@@ -125,60 +135,6 @@ private fun Content(
         modifier = Modifier.fillMaxSize().padding(innerPadding),
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
-        item {
-            CustomComposableElevatedCard(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp),
-                icon = Icons.Rounded.Person,
-                title = "Account",
-                onClick = {}
-            ) {
-                Box(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    when {
-                        state.currentUser == null -> {
-                            LoadingIndicator(
-                                modifier = Modifier.align(Alignment.Center)
-                            )
-                        }
-                        else -> {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(20.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                CustomTextContent(
-                                    modifier = Modifier.weight(1f),
-                                    text = when {
-                                        state.currentUser.isAnonymous -> "Anonymous"
-                                        else -> state.currentUser.email ?: "Email"
-                                    },
-                                    isSingleLine = true
-                                )
-                                AnimatedVisibility(
-                                    visible = state.currentUser.isAnonymous,
-                                    enter = fadeIn(tween()),
-                                    exit = fadeOut(tween())
-                                ) {
-                                    ElevatedCard(
-                                        colors = CardDefaults.elevatedCardColors(
-                                            containerColor = MaterialTheme.colorScheme.surface
-                                        ),
-                                        onClick = {  }
-                                    ) {
-                                        CustomTextContent(
-                                            modifier = Modifier.padding(15.dp),
-                                            text = "Bind Account",
-                                            isSingleLine = true
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
         data class DataClassSettings(
             val icon: ImageVector,
             val title: String,
@@ -186,6 +142,16 @@ private fun Content(
             val onClick: () -> Unit
         )
         val listSettings = listOf(
+            DataClassSettings(
+                icon = Icons.Rounded.AccountCircle,
+                title = "Account",
+                content = {
+                    CustomTextContent(
+                        text = "Manage your profile details and account security settings. Your data is synced with this account."
+                    )
+                },
+                onClick = { backStack.add(RoutePage.PageAccount) }
+            ),
             DataClassSettings(
                 icon = Icons.Rounded.Backup,
                 title = "Backup",
@@ -214,7 +180,7 @@ private fun Content(
                         text = "Permanently remove all tasks from this device. This cannot be undone."
                     )
                 },
-                onClick = {  }
+                onClick = { onAction(ActionSettings.BottomSheetDeleteAllData) }
             ),
             DataClassSettings(
                 icon = Icons.Rounded.Feedback,
@@ -224,7 +190,7 @@ private fun Content(
                         text = "Help to improve by sharing your feedback or suggesting new features, and reporting known bugs."
                     )
                 },
-                onClick = {  }
+                onClick = { backStack.add(RoutePage.PageReportFeedback) }
             ),
             DataClassSettings(
                 icon = Icons.Rounded.Info,
@@ -248,7 +214,7 @@ private fun Content(
                         )
                     }
                 },
-                onClick = {  }
+                onClick = { onAction(ActionSettings.AboutAppClick) }
             )
         )
         items(

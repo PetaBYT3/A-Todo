@@ -6,15 +6,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Feedback
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
@@ -31,19 +28,17 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
-import com.a.todo.contract.ActionReportFeedback
-import com.a.todo.contract.StateReportFeedback
-import com.a.todo.design.CustomButton
+import com.a.todo.contract.ActionAccount
+import com.a.todo.contract.StateAccount
 import com.a.todo.design.CustomIconButton
-import com.a.todo.design.CustomTextField
 import com.a.todo.design.innerWindowInsets
-import com.a.todo.viewmodel.ViewModelReportFeedback
+import com.a.todo.viewmodel.ViewModelAccount
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun PageReportFeedback(
+fun PageAccount(
     backStack: NavBackStack<NavKey>,
-    viewModel: ViewModelReportFeedback = koinViewModel()
+    viewModel: ViewModelAccount = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val onAction = viewModel::onAction
@@ -84,7 +79,7 @@ private fun TopBar(
                 onClick = { onNavigationClick.invoke() }
             )
         },
-        title = { Text(text = "Report & Feedback") },
+        title = { Text(text = "Account") },
         scrollBehavior = scrollBehavior
     )
 }
@@ -92,24 +87,12 @@ private fun TopBar(
 @Composable
 private fun Content(
     innerPadding: PaddingValues,
-    state: StateReportFeedback,
-    onAction: (ActionReportFeedback) -> Unit
+    state: StateAccount,
+    onAction: (ActionAccount) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize().padding(innerPadding).verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
-        CustomTextField(
-            modifier = Modifier.fillMaxWidth().height(500.dp).padding(horizontal = 15.dp),
-            value = state.textFieldReportAndFeedback,
-            onValueChange = { onAction(ActionReportFeedback.TextFieldReportAndFeedback(it)) },
-            leadingIcon = Icons.Rounded.Feedback,
-            placeholder = "Report & Feedback",
-        )
-        CustomButton(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp),
-            text = "Submit",
-            onClick = {}
-        )
     }
 }

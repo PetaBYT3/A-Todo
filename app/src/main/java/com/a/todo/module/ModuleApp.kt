@@ -7,12 +7,14 @@ import com.a.todo.repository.RepositoryDatabase
 import com.a.todo.services.FirebaseAuth
 import com.a.todo.services.FirebaseFirestore
 import com.a.todo.util.SnackBar
+import com.a.todo.viewmodel.ViewModelAccount
 import com.a.todo.viewmodel.ViewModelAddTodo
 import com.a.todo.viewmodel.ViewModelAll
 import com.a.todo.viewmodel.ViewModelBackup
 import com.a.todo.viewmodel.ViewModelEmailVerification
 import com.a.todo.viewmodel.ViewModelHome
 import com.a.todo.viewmodel.ViewModelMain
+import com.a.todo.viewmodel.ViewModelReportFeedback
 import com.a.todo.viewmodel.ViewModelRestore
 import com.a.todo.viewmodel.ViewModelSettings
 import com.a.todo.viewmodel.ViewModelSignIn
@@ -39,8 +41,10 @@ object ModuleApp {
         viewModelOf(::ViewModelAll)
         viewModelOf(::ViewModelAddTodo)
         viewModelOf(::ViewModelSettings)
+        viewModelOf(::ViewModelAccount)
         viewModelOf(::ViewModelBackup)
         viewModelOf(::ViewModelRestore)
+        viewModelOf(::ViewModelReportFeedback)
     }
 
     private val moduleServices = module {

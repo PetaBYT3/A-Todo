@@ -193,6 +193,15 @@ class RepositoryDatabase(
         }
     }.flowOn(Dispatchers.IO)
 
+    fun deleteAllTodo(): Flow<ResponseDatabase> = flow {
+        try {
+            dao.deleteAllTodo()
+            emit(ResponseDatabase.Success(messageSuccess = "All data on local successfully deleted"))
+        } catch (e: Exception) {
+            emit(ResponseDatabase.Failed(e.message.toString().capitalizeEachWord()))
+        }
+    }.flowOn(Dispatchers.IO)
+
     fun setUnfinishedTodoToExpired(): Flow<ResponseDatabase> = flow {
         try {
             val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault())

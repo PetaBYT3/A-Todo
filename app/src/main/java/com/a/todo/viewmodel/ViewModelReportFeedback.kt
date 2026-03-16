@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 
 class ViewModelReportFeedback(
 
@@ -23,6 +24,9 @@ class ViewModelReportFeedback(
 
     fun onAction(actionReportFeedback: ActionReportFeedback) {
         when (actionReportFeedback) {
+            is ActionReportFeedback.TextFieldReportAndFeedback -> {
+                _state.update { it.copy(textFieldReportAndFeedback = actionReportFeedback.reportAndFeedback) }
+            }
             ActionReportFeedback.ButtonSend -> TODO()
         }
     }

@@ -27,10 +27,12 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.a.todo.design.rootWindowInsets
 import com.a.todo.navigation.RoutePage
+import com.a.todo.page.PageAccount
 import com.a.todo.page.PageAddTodo
 import com.a.todo.page.PageBackup
 import com.a.todo.page.PageEmailVerification
 import com.a.todo.page.PageHome
+import com.a.todo.page.PageReportFeedback
 import com.a.todo.page.PageRestore
 import com.a.todo.page.PageSettings
 import com.a.todo.page.PageSignIn
@@ -127,61 +129,55 @@ private fun NavDisplayContainer(
         },
         entryProvider = { navKey ->
             when (navKey) {
-                is RoutePage.PageSignIn -> {
-                    NavEntry(navKey) {
-                        PageSignIn(
-                            backStack = backStack
-                        )
-                    }
+                is RoutePage.PageSignIn -> NavEntry(navKey) {
+                    PageSignIn(
+                        backStack = backStack
+                    )
                 }
-                is RoutePage.PageSignUp -> {
-                    NavEntry(navKey) {
-                        PageSignUp(
-                            backStack = backStack
-                        )
-                    }
+                is RoutePage.PageSignUp -> NavEntry(navKey) {
+                    PageSignUp(
+                        backStack = backStack
+                    )
                 }
-                is RoutePage.PageEmailVerification -> {
-                    NavEntry(navKey) {
-                        PageEmailVerification(
-                            backStack = backStack
-                        )
-                    }
+                is RoutePage.PageEmailVerification -> NavEntry(navKey) {
+                    PageEmailVerification(
+                        backStack = backStack
+                    )
                 }
-                is RoutePage.PageHome -> {
-                    NavEntry(navKey) {
-                        PageHome(
-                            backStack = backStack
-                        )
-                    }
+                is RoutePage.PageHome -> NavEntry(navKey) {
+                    PageHome(
+                        backStack = backStack
+                    )
                 }
-                is RoutePage.PageAddTodo -> {
-                    NavEntry(navKey) {
-                        PageAddTodo(
-                            backStack = backStack
-                        )
-                    }
+                is RoutePage.PageAddTodo -> NavEntry(navKey) {
+                    PageAddTodo(
+                        backStack = backStack
+                    )
                 }
-                is RoutePage.PageSettings -> {
-                    NavEntry(navKey) {
-                        PageSettings(
-                            backStack = backStack
-                        )
-                    }
+                is RoutePage.PageSettings -> NavEntry(navKey) {
+                    PageSettings(
+                        backStack = backStack
+                    )
                 }
-                is RoutePage.PageBackup -> {
-                    NavEntry(navKey) {
-                        PageBackup(
-                            backStack = backStack
-                        )
-                    }
+                is RoutePage.PageAccount -> NavEntry(navKey) {
+                    PageAccount(
+                        backStack = backStack
+                    )
                 }
-                is RoutePage.PageRestore -> {
-                    NavEntry(navKey) {
-                        PageRestore(
-                            backStack = backStack
-                        )
-                    }
+                is RoutePage.PageBackup -> NavEntry(navKey) {
+                    PageBackup(
+                        backStack = backStack
+                    )
+                }
+                is RoutePage.PageRestore -> NavEntry(navKey) {
+                    PageRestore(
+                        backStack = backStack
+                    )
+                }
+                is RoutePage.PageReportFeedback -> NavEntry(navKey) {
+                    PageReportFeedback(
+                        backStack = backStack
+                    )
                 }
                 else -> error("Unknown Navigation Key : $navKey")
             }
