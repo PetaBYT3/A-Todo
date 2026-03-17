@@ -2,10 +2,10 @@ package com.a.todo.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.a.todo.event.EventSignUp
+import com.a.todo.contract.ActionSignUp
+import com.a.todo.contract.StateSignUp
 import com.a.todo.services.FirebaseAuth
 import com.a.todo.services.ResponseAuth
-import com.a.todo.state.StateSignUp
 import com.a.todo.util.SnackBar
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -28,18 +28,18 @@ class ViewModelSignUp(
         StateSignUp()
     )
 
-    fun onEvent(eventSignUp: EventSignUp) {
-        when (eventSignUp) {
-            is EventSignUp.TextFieldEmail -> {
-                _state.update { it.copy(textFieldEmail = eventSignUp.email) }
+    fun onEvent(actionSignUp: ActionSignUp) {
+        when (actionSignUp) {
+            is ActionSignUp.TextFieldEmail -> {
+                _state.update { it.copy(textFieldEmail = actionSignUp.email) }
             }
-            is EventSignUp.TextFieldPassword -> {
-                _state.update { it.copy(textFieldPassword = eventSignUp.password) }
+            is ActionSignUp.TextFieldPassword -> {
+                _state.update { it.copy(textFieldPassword = actionSignUp.password) }
             }
-            is EventSignUp.TextFieldRetypePassword -> {
-                _state.update { it.copy(textFieldRetypePassword = eventSignUp.retypePassword) }
+            is ActionSignUp.TextFieldRetypePassword -> {
+                _state.update { it.copy(textFieldRetypePassword = actionSignUp.retypePassword) }
             }
-            EventSignUp.ButtonSignUp -> {
+            ActionSignUp.ButtonSignUp -> {
                 buttonSignUp()
             }
         }

@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
+import com.a.todo.contract.StateAll
 import com.a.todo.design.CustomComposableElevatedCard
 import com.a.todo.design.CustomIconButton
 import com.a.todo.design.CustomTextContent
@@ -58,7 +59,6 @@ import com.a.todo.design.innerWindowInsets
 import com.a.todo.extension.convertLongToString
 import com.a.todo.navigation.RoutePage
 import com.a.todo.repository.ResponseDatabase
-import com.a.todo.state.StateAll
 import com.a.todo.viewmodel.ViewModelAll
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel

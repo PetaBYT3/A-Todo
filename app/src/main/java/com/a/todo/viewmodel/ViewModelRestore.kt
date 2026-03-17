@@ -3,9 +3,9 @@ package com.a.todo.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.a.todo.contract.ActionRestore
+import com.a.todo.contract.StateRestore
 import com.a.todo.services.FirebaseFirestore
 import com.a.todo.services.ResponseFirestore
-import com.a.todo.state.StateRestore
 import com.a.todo.util.SnackBar
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

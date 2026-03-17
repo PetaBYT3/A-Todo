@@ -2,10 +2,10 @@ package com.a.todo.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.a.todo.event.EventSignIn
+import com.a.todo.contract.ActionSignIn
+import com.a.todo.contract.StateSignIn
 import com.a.todo.services.FirebaseAuth
 import com.a.todo.services.ResponseAuth
-import com.a.todo.state.StateSignIn
 import com.a.todo.util.SnackBar
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -28,18 +28,18 @@ class ViewModelSignIn(
         StateSignIn()
     )
 
-    fun onEvent(eventSignIn: EventSignIn) {
-        when (eventSignIn) {
-            is EventSignIn.TextFieldEmail -> {
-                _state.update { it.copy(textFieldEmail = eventSignIn.email) }
+    fun onEvent(actionSignIn: ActionSignIn) {
+        when (actionSignIn) {
+            is ActionSignIn.TextFieldEmail -> {
+                _state.update { it.copy(textFieldEmail = actionSignIn.email) }
             }
-            is EventSignIn.TextFieldPassword -> {
-                _state.update { it.copy(textFieldPassword = eventSignIn.password) }
+            is ActionSignIn.TextFieldPassword -> {
+                _state.update { it.copy(textFieldPassword = actionSignIn.password) }
             }
-            EventSignIn.ButtonSignIn -> {
+            ActionSignIn.ButtonSignIn -> {
                 buttonSignIn()
             }
-            EventSignIn.ButtonSignInAnonymously -> {
+            ActionSignIn.ButtonSignInAnonymously -> {
                 buttonSignInAnonymously()
             }
         }

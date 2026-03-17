@@ -9,19 +9,18 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CalendarToday
-import androidx.compose.material.icons.rounded.Logout
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
@@ -41,11 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
-import com.a.todo.design.CustomComposableElevatedCard
-import com.a.todo.design.CustomConfirmationBottomSheet
-import com.a.todo.design.CustomTextContent
 import com.a.todo.design.CustomTextTitle
-import com.a.todo.event.EventHome
 import com.a.todo.navigation.RoutePage
 import com.a.todo.viewmodel.ViewModelHome
 import kotlinx.coroutines.launch
@@ -76,7 +71,7 @@ fun PageHome(
         drawerContent = {
             ModalDrawerSheet() {
                 Column(
-                    modifier = Modifier.fillMaxSize().padding(15.dp)
+                    modifier = Modifier.fillMaxSize().padding(top = 15.dp, start = 15.dp, end = 15.dp)
                 ) {
                     Text(
                         modifier = Modifier.padding(vertical = 20.dp),
@@ -96,9 +91,7 @@ fun PageHome(
                             }
                         )
                     }
-                    HorizontalDivider(
-                        modifier = Modifier.padding(vertical = 15.dp)
-                    )
+                    Spacer(modifier = Modifier.weight(1f))
                     NavigationDrawerItem(
                         icon = { Icon(Icons.Rounded.Settings, null) },
                         label = { CustomTextTitle(text = "Settings") },
@@ -110,18 +103,6 @@ fun PageHome(
                             }
                         }
                     )
-                    NavigationDrawerItem(
-                        icon = { Icon(Icons.Rounded.Logout, null) },
-                        label = { CustomTextTitle(text = "Sign Out") },
-                        selected = false,
-                        onClick = {
-                            scope.launch {
-                                drawerState.close()
-                                onEvent(EventHome.BottomSheetSignOut)
-                            }
-                        }
-                    )
-
                 }
             }
         }
@@ -151,27 +132,4 @@ fun PageHome(
             }
         }
     }
-
-    CustomConfirmationBottomSheet(
-        isBottomSheetVisible = state.bottomSheetSignOut,
-        title = "Sign Out",
-        content = {
-            CustomComposableElevatedCard(
-                icon = Icons.Rounded.Logout,
-                title = "Sign Out ?",
-                onClick = {}
-            ) {
-                CustomTextContent(
-                    text = "Are you sure you want to sign out ?"
-                )
-            }
-        },
-        onCancel = {
-            onEvent(EventHome.BottomSheetSignOut)
-        },
-        onConfirm = {
-            onEvent(EventHome.BottomSheetSignOut)
-            onEvent(EventHome.ButtonSignOut)
-        }
-    )
 }

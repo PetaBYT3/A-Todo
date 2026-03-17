@@ -28,10 +28,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
+import com.a.todo.contract.ActionEmailVerification
+import com.a.todo.contract.StateEmailVerification
 import com.a.todo.design.CustomButton
 import com.a.todo.design.innerWindowInsets
-import com.a.todo.event.ActionEmailVerification
-import com.a.todo.state.StateEmailVerification
 import com.a.todo.viewmodel.ViewModelEmailVerification
 import org.koin.compose.viewmodel.koinViewModel
 

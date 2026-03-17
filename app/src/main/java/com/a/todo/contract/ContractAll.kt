@@ -1,4 +1,4 @@
-package com.a.todo.state
+package com.a.todo.contract
 
 import com.a.todo.repository.ResponseDatabase
 

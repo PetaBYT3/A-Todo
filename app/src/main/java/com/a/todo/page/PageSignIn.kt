@@ -23,14 +23,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
+import com.a.todo.contract.ActionSignIn
+import com.a.todo.contract.StateSignIn
 import com.a.todo.design.CustomButton
 import com.a.todo.design.CustomOutlinedButton
 import com.a.todo.design.CustomPasswordTextField
 import com.a.todo.design.CustomTextField
 import com.a.todo.design.innerWindowInsets
-import com.a.todo.event.EventSignIn
 import com.a.todo.navigation.RoutePage
-import com.a.todo.state.StateSignIn
 import com.a.todo.viewmodel.ViewModelSignIn
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -68,7 +68,7 @@ private fun TopBar() {
 private fun Content(
     backStack: NavBackStack<NavKey>,
     state: StateSignIn,
-    onEvent: (EventSignIn) -> Unit,
+    onEvent: (ActionSignIn) -> Unit,
     innerPadding: PaddingValues
 ) {
     Column(
@@ -78,21 +78,21 @@ private fun Content(
         CustomTextField(
             modifier = Modifier.fillMaxWidth(),
             value = state.textFieldEmail,
-            onValueChange = { onEvent(EventSignIn.TextFieldEmail(it)) },
+            onValueChange = { onEvent(ActionSignIn.TextFieldEmail(it)) },
             leadingIcon = Icons.Rounded.Email,
             placeholder = "Email"
         )
         CustomPasswordTextField(
             modifier = Modifier.fillMaxWidth(),
             value = state.textFieldPassword,
-            onValueChange = { onEvent(EventSignIn.TextFieldPassword(it)) },
+            onValueChange = { onEvent(ActionSignIn.TextFieldPassword(it)) },
             placeholder = "Password"
         )
         CustomButton(
             modifier = Modifier.fillMaxWidth(),
             text = "Sign In",
             isLoading = state.isButtonSignInLoading,
-            onClick = { onEvent(EventSignIn.ButtonSignIn) }
+            onClick = { onEvent(ActionSignIn.ButtonSignIn) }
         )
         CustomOutlinedButton(
             modifier = Modifier.fillMaxWidth(),
@@ -103,7 +103,7 @@ private fun Content(
             modifier = Modifier.fillMaxWidth(),
             text = "Continue Anonymously",
             isLoading = state.isButtonSignInAnonymouslyLoading,
-            onClick = { onEvent(EventSignIn.ButtonSignInAnonymously) }
+            onClick = { onEvent(ActionSignIn.ButtonSignInAnonymously) }
         )
     }
 }

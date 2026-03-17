@@ -2,10 +2,10 @@ package com.a.todo.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.a.todo.event.ActionEmailVerification
+import com.a.todo.contract.ActionEmailVerification
+import com.a.todo.contract.StateEmailVerification
 import com.a.todo.services.FirebaseAuth
 import com.a.todo.services.ResponseAuth
-import com.a.todo.state.StateEmailVerification
 import com.a.todo.util.SnackBar
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

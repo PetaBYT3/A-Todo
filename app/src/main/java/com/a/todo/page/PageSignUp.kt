@@ -26,13 +26,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
+import com.a.todo.contract.ActionSignUp
+import com.a.todo.contract.StateSignUp
 import com.a.todo.design.CustomButton
 import com.a.todo.design.CustomIconButton
 import com.a.todo.design.CustomPasswordTextField
 import com.a.todo.design.CustomTextField
-import com.a.todo.event.EventSignIn
-import com.a.todo.event.EventSignUp
-import com.a.todo.state.StateSignUp
 import com.a.todo.viewmodel.ViewModelSignUp
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -81,7 +80,7 @@ private fun TopBar(
 private fun Content(
     innerPadding: PaddingValues,
     state: StateSignUp,
-    onEvent: (EventSignUp) -> Unit
+    onEvent: (ActionSignUp) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize().padding(innerPadding).padding(horizontal = 15.dp).verticalScroll(rememberScrollState()),
@@ -90,26 +89,26 @@ private fun Content(
         CustomTextField(
             modifier = Modifier.fillMaxWidth(),
             value = state.textFieldEmail,
-            onValueChange = { onEvent(EventSignUp.TextFieldEmail(it)) },
+            onValueChange = { onEvent(ActionSignUp.TextFieldEmail(it)) },
             leadingIcon = Icons.Rounded.Email,
             placeholder = "Email"
         )
         CustomPasswordTextField(
             modifier = Modifier.fillMaxWidth(),
             value = state.textFieldPassword,
-            onValueChange = { onEvent(EventSignUp.TextFieldPassword(it)) },
+            onValueChange = { onEvent(ActionSignUp.TextFieldPassword(it)) },
             placeholder = "Password"
         )
         CustomPasswordTextField(
             modifier = Modifier.fillMaxWidth(),
             value = state.textFieldRetypePassword,
-            onValueChange = { onEvent(EventSignUp.TextFieldRetypePassword(it)) },
+            onValueChange = { onEvent(ActionSignUp.TextFieldRetypePassword(it)) },
             placeholder = "Retype Password"
         )
         CustomButton(
             modifier = Modifier.fillMaxWidth(),
             text = "Sign Up",
-            onClick = { onEvent(EventSignUp.ButtonSignUp) },
+            onClick = { onEvent(ActionSignUp.ButtonSignUp) },
             isLoading = state.isButtonSignUpLoading
         )
     }

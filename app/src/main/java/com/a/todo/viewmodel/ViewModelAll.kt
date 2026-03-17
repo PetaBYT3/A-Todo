@@ -2,8 +2,8 @@ package com.a.todo.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.a.todo.contract.StateAll
 import com.a.todo.repository.RepositoryDatabase
-import com.a.todo.state.StateAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart

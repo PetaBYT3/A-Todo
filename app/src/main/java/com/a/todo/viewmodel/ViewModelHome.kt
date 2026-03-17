@@ -2,11 +2,11 @@ package com.a.todo.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.a.todo.event.EventHome
+import com.a.todo.contract.ActionHome
+import com.a.todo.contract.StateHome
 import com.a.todo.local.DataStore
 import com.a.todo.services.FirebaseAuth
 import com.a.todo.services.ResponseAuth
-import com.a.todo.state.StateHome
 import com.a.todo.util.SnackBar
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -37,15 +37,15 @@ class ViewModelHome(
         }
     }
 
-    fun onEvent(eventHome: EventHome) {
-        when (eventHome) {
-            EventHome.CardAnonymousWarnButtonDismiss -> {
+    fun onEvent(actionHome: ActionHome) {
+        when (actionHome) {
+            ActionHome.CardAnonymousWarnButtonDismiss -> {
                 _state.update { it.copy(cardAnonymousWarn = false) }
             }
-            EventHome.BottomSheetSignOut -> {
+            ActionHome.BottomSheetSignOut -> {
                 _state.update { it.copy(bottomSheetSignOut = !it.bottomSheetSignOut) }
             }
-            EventHome.ButtonSignOut -> {
+            ActionHome.ButtonSignOut -> {
                 buttonSignOut()
             }
         }

@@ -29,14 +29,19 @@ class ViewModelAccount(
 
     private fun getAuthState() {
         viewModelScope.launch {
-            firebaseAuth.getAuthState().collect { result ->
-                _state.update { it.copy(currentUser = result) }
+            firebaseAuth.getAuthState().onStart {
+                _state.update { it.copy(isLoading = true) }
+            }.collect { result ->
+                _state.update { it.copy(currentUser = result, isLoading = false) }
             }
         }
     }
 
     fun onAction(actionAccount: ActionAccount) {
         when (actionAccount) {
+            ActionAccount.BottomSheetSignOut -> {
+                _state.update { it.copy(bottomSheetSignOut = !it.bottomSheetSignOut) }
+            }
             ActionAccount.ButtonSignOut -> {
                 buttonSignOut()
             }

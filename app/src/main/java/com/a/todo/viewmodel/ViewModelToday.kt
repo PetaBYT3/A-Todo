@@ -2,11 +2,10 @@ package com.a.todo.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.a.todo.event.EventToday
-import com.a.todo.local.EntityTodo
+import com.a.todo.contract.ActionToday
+import com.a.todo.contract.StateToday
 import com.a.todo.repository.RepositoryDatabase
 import com.a.todo.repository.ResponseDatabase
-import com.a.todo.state.StateToday
 import com.a.todo.util.SnackBar
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -45,12 +44,12 @@ class ViewModelToday(
         }
     }
 
-    fun onEvent(eventToday: EventToday) {
-        when (eventToday) {
-            is EventToday.BottomSheetMarkAsDoneVisibility -> {
-                _state.update { it.copy(bottomSheetMarkAsDone = eventToday.isVisible, todoToDelete = eventToday.todoToDelete) }
+    fun onEvent(actionToday: ActionToday) {
+        when (actionToday) {
+            is ActionToday.BottomSheetMarkAsDoneVisibility -> {
+                _state.update { it.copy(bottomSheetMarkAsDone = actionToday.isVisible, todoToDelete = actionToday.todoToDelete) }
             }
-            EventToday.ButtonMarkAsDone -> {
+            ActionToday.ButtonMarkAsDone -> {
                 buttonMarkAsDone()
             }
         }

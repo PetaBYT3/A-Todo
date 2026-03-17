@@ -51,17 +51,17 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
+import com.a.todo.contract.ActionToday
+import com.a.todo.contract.StateToday
 import com.a.todo.design.CustomComposableElevatedCard
 import com.a.todo.design.CustomConfirmationBottomSheet
 import com.a.todo.design.CustomIconButton
 import com.a.todo.design.CustomTextContent
 import com.a.todo.design.CustomTextHeader
 import com.a.todo.design.innerWindowInsets
-import com.a.todo.event.EventToday
 import com.a.todo.extension.convertLongToString
 import com.a.todo.navigation.RoutePage
 import com.a.todo.repository.ResponseDatabase
-import com.a.todo.state.StateToday
 import com.a.todo.viewmodel.ViewModelToday
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
@@ -134,11 +134,11 @@ fun PageToday(
             }
         },
         onCancel = {
-            onEvent(EventToday.BottomSheetMarkAsDoneVisibility(false, null))
+            onEvent(ActionToday.BottomSheetMarkAsDoneVisibility(false, null))
         },
         onConfirm = {
-            onEvent(EventToday.ButtonMarkAsDone)
-            onEvent(EventToday.BottomSheetMarkAsDoneVisibility(false, null))
+            onEvent(ActionToday.ButtonMarkAsDone)
+            onEvent(ActionToday.BottomSheetMarkAsDoneVisibility(false, null))
         }
     )
 }
@@ -176,7 +176,7 @@ private enum class TabToday(
 private fun Content(
     innerPadding: PaddingValues,
     state: StateToday,
-    onEvent: (EventToday) -> Unit
+    onEvent: (ActionToday) -> Unit
 ) {
     val scope = rememberCoroutineScope()
 
@@ -245,7 +245,7 @@ private fun FloatingActionButton(
 @Composable
 private fun TabTodo(
     state: StateToday,
-    onEvent: (EventToday) -> Unit
+    onEvent: (ActionToday) -> Unit
 ) {
     Box(
         modifier = Modifier.fillMaxSize()
@@ -295,7 +295,7 @@ private fun TabTodo(
                                         colors = CardDefaults.elevatedCardColors(
                                             containerColor = MaterialTheme.colorScheme.surface
                                         ),
-                                        onClick = { onEvent(EventToday.BottomSheetMarkAsDoneVisibility(true, todoToday)) }
+                                        onClick = { onEvent(ActionToday.BottomSheetMarkAsDoneVisibility(true, todoToday)) }
                                     ) {
                                         CustomTextContent(
                                             modifier = Modifier.padding(15.dp),
