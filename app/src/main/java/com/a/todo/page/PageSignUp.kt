@@ -5,7 +5,6 @@ package com.a.todo.page
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
@@ -20,6 +19,7 @@ import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -32,6 +32,7 @@ import com.a.todo.design.CustomButton
 import com.a.todo.design.CustomIconButton
 import com.a.todo.design.CustomPasswordTextField
 import com.a.todo.design.CustomTextField
+import com.a.todo.design.innerWindowInsets
 import com.a.todo.viewmodel.ViewModelSignUp
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -43,9 +44,15 @@ fun PageSignUp(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val onEvent = viewModel::onEvent
 
+    LaunchedEffect(viewModel.signUpStatus) {
+        viewModel.signUpStatus.collect {
+            backStack.removeAt(backStack.lastIndex)
+        }
+    }
+
     Scaffold(
         modifier = Modifier.imePadding(),
-        contentWindowInsets = WindowInsets(0.dp),
+        contentWindowInsets = innerWindowInsets(),
         topBar = {
             TopBar(
                 backStack = backStack

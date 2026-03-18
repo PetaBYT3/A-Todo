@@ -19,12 +19,12 @@ import kotlinx.coroutines.launch
 class ViewModelMain(
     private val firebaseAuth: FirebaseAuth
 ): ViewModel() {
-    private val _isInitialized = MutableStateFlow(true)
+    private val _isInitialized = MutableStateFlow(false)
     val isInitialized = _isInitialized.asStateFlow()
 
     private val _navigate = Channel<RoutePage>()
     val navigate = _navigate.receiveAsFlow().onStart {
-        initializeAccount()
+        //initializeAccount()
     }.shareIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5_000)

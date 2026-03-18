@@ -160,7 +160,13 @@ private fun Content(
                         text = "Secure your tasks in the Cloud to prevent data loss when switching devices."
                     )
                 },
-                onClick = { backStack.add(RoutePage.PageBackup) }
+                onClick = {
+                    if (state.authState != null) {
+                        backStack.add(RoutePage.PageBackup)
+                    } else {
+                        onAction(ActionSettings.ShowSnackBar("No Account !"))
+                    }
+                }
             ),
             DataClassSettings(
                 icon = Icons.Rounded.Restore,
@@ -170,7 +176,13 @@ private fun Content(
                         text = "Retrieve your latest saved tasks from the Cloud and sync them to this device."
                     )
                 },
-                onClick = { backStack.add(RoutePage.PageRestore) }
+                onClick = {
+                    if (state.authState != null) {
+                        backStack.add(RoutePage.PageRestore)
+                    } else {
+                        onAction(ActionSettings.ShowSnackBar("No Account !"))
+                    }
+                }
             ),
             DataClassSettings(
                 icon = Icons.Rounded.Delete,

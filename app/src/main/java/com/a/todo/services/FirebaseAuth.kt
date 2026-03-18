@@ -114,7 +114,7 @@ class FirebaseAuth {
         }
     }.flowOn(Dispatchers.IO)
 
-    fun sendEmailVerification(): Flow<ResponseAuth> = flow {
+    fun getEmailVerification(): Flow<ResponseAuth> = flow {
         try {
             firebaseAuth.currentUser?.sendEmailVerification()?.await()
             emit(ResponseAuth.Success("Link Verification Has Been Sent To Your Email"))

@@ -11,12 +11,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -26,11 +28,10 @@ import androidx.navigation3.runtime.NavKey
 import com.a.todo.contract.ActionSignIn
 import com.a.todo.contract.StateSignIn
 import com.a.todo.design.CustomButton
-import com.a.todo.design.CustomOutlinedButton
+import com.a.todo.design.CustomIconButton
 import com.a.todo.design.CustomPasswordTextField
 import com.a.todo.design.CustomTextField
 import com.a.todo.design.innerWindowInsets
-import com.a.todo.navigation.RoutePage
 import com.a.todo.viewmodel.ViewModelSignIn
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -42,10 +43,20 @@ fun PageSignIn(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val onEvent = viewModel::onEvent
 
+    LaunchedEffect(viewModel.signInStatus) {
+        viewModel.signInStatus.collect {
+            backStack.removeAt(backStack.lastIndex)
+        }
+    }
+
     Scaffold(
         modifier = Modifier.imePadding(),
         contentWindowInsets = innerWindowInsets(),
-        topBar = { TopBar() },
+        topBar = {
+            TopBar(
+                onNavigationClick = { backStack.removeAt(backStack.lastIndex) }
+            )
+        },
         content = { innerPadding ->
             Content(
                 backStack = backStack,
@@ -58,8 +69,16 @@ fun PageSignIn(
 }
 
 @Composable
-private fun TopBar() {
+private fun TopBar(
+    onNavigationClick: () -> Unit
+) {
     LargeTopAppBar(
+        navigationIcon = {
+            CustomIconButton(
+                icon = Icons.Rounded.ArrowBack,
+                onClick = { onNavigationClick.invoke() }
+            )
+        },
         title = { Text(text = "Sign In") }
     )
 }
@@ -93,17 +112,6 @@ private fun Content(
             text = "Sign In",
             isLoading = state.isButtonSignInLoading,
             onClick = { onEvent(ActionSignIn.ButtonSignIn) }
-        )
-        CustomOutlinedButton(
-            modifier = Modifier.fillMaxWidth(),
-            text = "Sign Up",
-            onClick = { backStack.add(RoutePage.PageSignUp) }
-        )
-        CustomOutlinedButton(
-            modifier = Modifier.fillMaxWidth(),
-            text = "Continue Anonymously",
-            isLoading = state.isButtonSignInAnonymouslyLoading,
-            onClick = { onEvent(ActionSignIn.ButtonSignInAnonymously) }
         )
     }
 }

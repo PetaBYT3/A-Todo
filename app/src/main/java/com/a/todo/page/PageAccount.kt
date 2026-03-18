@@ -14,9 +14,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.DisabledByDefault
 import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material.icons.rounded.Logout
 import androidx.compose.material.icons.rounded.Password
+import androidx.compose.material.icons.rounded.Verified
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -38,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.rememberNavBackStack
 import com.a.todo.contract.ActionAccount
 import com.a.todo.contract.StateAccount
 import com.a.todo.design.CustomButton
@@ -47,6 +50,7 @@ import com.a.todo.design.CustomIconButton
 import com.a.todo.design.CustomOutlinedButton
 import com.a.todo.design.CustomTextContent
 import com.a.todo.design.innerWindowInsets
+import com.a.todo.navigation.RoutePage
 import com.a.todo.viewmodel.ViewModelAccount
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -71,6 +75,7 @@ fun PageAccount(
         content = { innerPadding ->
             Content(
                 innerPadding = innerPadding,
+                backStack = backStack,
                 state = state,
                 onAction = onAction
             )
@@ -120,6 +125,7 @@ private fun TopBar(
 @Composable
 private fun Content(
     innerPadding: PaddingValues,
+    backStack: NavBackStack<NavKey>,
     state: StateAccount,
     onAction: (ActionAccount) -> Unit
 ) {
@@ -132,7 +138,7 @@ private fun Content(
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
-            state.currentUser == null -> {
+            state.authState == null -> {
                 Column(
                     modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.spacedBy(15.dp)
@@ -151,12 +157,12 @@ private fun Content(
                     CustomButton(
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp),
                         text = "Sign In",
-                        onClick = {}
+                        onClick = { backStack.add(RoutePage.PageSignIn) }
                     )
                     CustomOutlinedButton(
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp),
                         text = "Sign Up",
-                        onClick = {}
+                        onClick = { backStack.add(RoutePage.PageSignUp) }
                     )
                 }
             }
@@ -171,10 +177,25 @@ private fun Content(
                         title = "Email",
                         content = {
                             CustomTextContent(
-                                text = state.currentUser.email ?: ""
+                                text = state.authState.email ?: ""
                             )
                         },
                         onClick = {}
+                    )
+                    CustomComposableElevatedCard(
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp),
+                        icon = if (state.authState.isEmailVerified) Icons.Rounded.Verified else Icons.Rounded.DisabledByDefault,
+                        title = "Email Verified Status",
+                        content = {
+                            CustomTextContent(
+                                text = if (state.authState.isEmailVerified) {
+                                    "Verified"
+                                } else {
+                                    "Not Verified"
+                                }
+                            )
+                        },
+                        onClick = { onAction(ActionAccount.GetEmailVerification) }
                     )
                     CustomComposableElevatedCard(
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp),
@@ -185,7 +206,7 @@ private fun Content(
                                 text = "We will send you a link to change your password from your email"
                             )
                         },
-                        onClick = {}
+                        onClick = {  }
                     )
                     CustomOutlinedButton(
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp),
@@ -201,8 +222,11 @@ private fun Content(
 @Preview(showBackground = true)
 @Composable
 private fun Preview() {
+    val backStack = rememberNavBackStack()
+
     Content(
         innerPadding = PaddingValues(0.dp),
+        backStack = backStack,
         state = StateAccount(),
         onAction = {}
     )

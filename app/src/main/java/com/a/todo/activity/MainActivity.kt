@@ -53,10 +53,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             ATodoTheme {
                 val backStack = rememberNavBackStack(
-                    RoutePage.PageSignIn
+                    RoutePage.PageHome
                 )
 
-                val snackBar: SnackBar = koinInject()
+                val snackBar = koinInject<SnackBar>()
                 val snackBarHostState = remember { SnackbarHostState() }
 
                 LaunchedEffect(viewModel.navigate) {

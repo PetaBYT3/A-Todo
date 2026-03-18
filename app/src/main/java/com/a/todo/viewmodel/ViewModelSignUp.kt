@@ -7,10 +7,12 @@ import com.a.todo.contract.StateSignUp
 import com.a.todo.services.FirebaseAuth
 import com.a.todo.services.ResponseAuth
 import com.a.todo.util.SnackBar
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -19,6 +21,9 @@ class ViewModelSignUp(
     private val firebaseAuth: FirebaseAuth,
     private val snackBar: SnackBar
 ): ViewModel() {
+    private val _signUpStatus = Channel<Unit>()
+    val signUpStatus = _signUpStatus.receiveAsFlow()
+
     private val _state = MutableStateFlow(StateSignUp())
     val state = _state.onStart {
 
@@ -59,6 +64,7 @@ class ViewModelSignUp(
                 when (result) {
                     is ResponseAuth.Success -> {
                         snackBar.showSnackBar(result.messageSuccess)
+                        _signUpStatus.send(Unit)
                     }
                     is ResponseAuth.Failed -> {
                         snackBar.showSnackBar(result.messageFailed)

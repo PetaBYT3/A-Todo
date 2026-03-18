@@ -7,10 +7,12 @@ import com.a.todo.contract.StateSignIn
 import com.a.todo.services.FirebaseAuth
 import com.a.todo.services.ResponseAuth
 import com.a.todo.util.SnackBar
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -19,6 +21,9 @@ class ViewModelSignIn(
     private val firebaseAuth: FirebaseAuth,
     private val snackBar: SnackBar
 ): ViewModel() {
+    private val _signInStatus = Channel<Unit>()
+    val signInStatus = _signInStatus.receiveAsFlow()
+
     private val _state = MutableStateFlow(StateSignIn())
     val state = _state.onStart {
 
@@ -39,9 +44,6 @@ class ViewModelSignIn(
             ActionSignIn.ButtonSignIn -> {
                 buttonSignIn()
             }
-            ActionSignIn.ButtonSignInAnonymously -> {
-                buttonSignInAnonymously()
-            }
         }
     }
 
@@ -58,25 +60,7 @@ class ViewModelSignIn(
                 when (result) {
                     is ResponseAuth.Success -> {
                         snackBar.showSnackBar(result.messageSuccess)
-                    }
-                    is ResponseAuth.Failed -> {
-                        snackBar.showSnackBar(result.messageFailed)
-                    }
-                }
-            }
-        }
-    }
-
-    private fun buttonSignInAnonymously() {
-        viewModelScope.launch {
-            firebaseAuth.signInAnonymously().onStart {
-                _state.update { it.copy(isButtonSignInAnonymouslyLoading = true) }
-            }.onCompletion {
-                _state.update { it.copy(isButtonSignInAnonymouslyLoading = false) }
-            }.collect { result ->
-                when (result) {
-                    is ResponseAuth.Success -> {
-                        snackBar.showSnackBar(result.messageSuccess)
+                        _signInStatus.send(Unit)
                     }
                     is ResponseAuth.Failed -> {
                         snackBar.showSnackBar(result.messageFailed)

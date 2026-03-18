@@ -32,18 +32,38 @@ class ViewModelAccount(
             firebaseAuth.getAuthState().onStart {
                 _state.update { it.copy(isLoading = true) }
             }.collect { result ->
-                _state.update { it.copy(currentUser = result, isLoading = false) }
+                _state.update { it.copy(authState = result, isLoading = false) }
             }
         }
     }
 
     fun onAction(actionAccount: ActionAccount) {
         when (actionAccount) {
+            ActionAccount.GetEmailVerification -> {
+                getEmailVerification()
+            }
             ActionAccount.BottomSheetSignOut -> {
                 _state.update { it.copy(bottomSheetSignOut = !it.bottomSheetSignOut) }
             }
             ActionAccount.ButtonSignOut -> {
                 buttonSignOut()
+            }
+        }
+    }
+
+    private fun getEmailVerification() {
+        viewModelScope.launch {
+            _state.value.authState?.let { authState ->
+                if (authState.isEmailVerified) {
+                    snackBar.showSnackBar("Email is already verified")
+                } else {
+                    firebaseAuth.getEmailVerification().collect { result ->
+                        when (result) {
+                            is ResponseAuth.Success -> snackBar.showSnackBar(result.messageSuccess)
+                            is ResponseAuth.Failed -> snackBar.showSnackBar(result.messageFailed)
+                        }
+                    }
+                }
             }
         }
     }

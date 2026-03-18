@@ -46,7 +46,7 @@ class ViewModelEmailVerification(
 
     private fun buttonSendEmailVerification() {
         viewModelScope.launch {
-            firebaseAuth.sendEmailVerification().onStart {
+            firebaseAuth.getEmailVerification().onStart {
                 _state.update { it.copy(isButtonSendEmailVerificationLoading = true) }
             }.onCompletion {
                 _state.update { it.copy(isButtonSendEmailVerificationLoading = false) }

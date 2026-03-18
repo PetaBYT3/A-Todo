@@ -6,6 +6,7 @@ import com.a.todo.contract.ActionSettings
 import com.a.todo.contract.StateSettings
 import com.a.todo.repository.RepositoryDatabase
 import com.a.todo.repository.ResponseDatabase
+import com.a.todo.services.FirebaseAuth
 import com.a.todo.util.SnackBar
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -15,17 +16,26 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ViewModelSettings(
+    private val firebaseAuth: FirebaseAuth,
     private val repositoryDatabase: RepositoryDatabase,
     private val snackBar: SnackBar
 ): ViewModel() {
     private val _state = MutableStateFlow(StateSettings())
     val state = _state.onStart {
-
+        getAuthState()
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5_000),
         StateSettings()
     )
+
+    private fun getAuthState() {
+        viewModelScope.launch {
+            firebaseAuth.getAuthState().collect { result ->
+                _state.update { it.copy(authState = result) }
+            }
+        }
+    }
 
     fun onAction(actionSettings: ActionSettings) {
         when (actionSettings) {
@@ -37,6 +47,9 @@ class ViewModelSettings(
             }
             ActionSettings.AboutAppClick -> {
                 aboutAppClick()
+            }
+            is ActionSettings.ShowSnackBar -> {
+                showSnackBar(actionSettings.message)
             }
         }
     }
@@ -69,6 +82,12 @@ class ViewModelSettings(
                 4 -> snackBar.showSnackBar("Are you still trying ?")
                 5 -> snackBar.showSnackBar("Like what i said before")
             }
+        }
+    }
+
+    private fun showSnackBar(message: String) {
+        viewModelScope.launch {
+            snackBar.showSnackBar(message)
         }
     }
 }
