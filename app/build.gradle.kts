@@ -67,6 +67,9 @@ dependencies {
     //Splash Screen
     implementation(libs.splash.screen)
 
+    //Lifecycle Process
+    implementation(libs.lifecyle.process)
+
     //Serialization
     implementation(libs.kotlinx.serialization.json)
 
