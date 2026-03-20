@@ -39,6 +39,9 @@ class ViewModelSettings(
 
     fun onAction(actionSettings: ActionSettings) {
         when (actionSettings) {
+            ActionSettings.BottomSheetNoAccount -> {
+                _state.update { it.copy(bottomSheetNoAccount = !it.bottomSheetNoAccount) }
+            }
             ActionSettings.BottomSheetDeleteAllData -> {
                 _state.update { it.copy(bottomSheetDeleteAllData = !it.bottomSheetDeleteAllData) }
             }

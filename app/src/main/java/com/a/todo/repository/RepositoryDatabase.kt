@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import java.time.LocalDate
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -204,18 +205,15 @@ class RepositoryDatabase(
 
     fun setUnfinishedTodoToExpired(): Flow<ResponseDatabase> = flow {
         try {
-            val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault())
-            val yesterday = LocalDate.now().minusDays(1).format(formatter)
+            val today = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
 
-            val yesterdayTodo = dao.getAllTodo().map { allTodo ->
-                allTodo.filter { todo ->
-                    val todoDate = convertLongToString(todo.todoDate)
-                    todoDate == yesterday
-                }
-            }.first()
+            val expiredTodo = dao.getAllTodo().first().filter { todo ->
+                todo.todoStatus != "Done" && todo.todoStatus != "Expired" && todo.todoDate < today
+            }.map { expiredTodo ->
+                expiredTodo.copy(todoStatus = "Expired")
+            }
 
-            if (yesterdayTodo.isNotEmpty()) {
-                val expiredTodo = yesterdayTodo.map { it.copy(todoStatus = "Expired") }
+            if (expiredTodo.isNotEmpty()) {
                 dao.upsertListTodo(expiredTodo)
             }
 

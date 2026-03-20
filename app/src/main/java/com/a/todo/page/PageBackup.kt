@@ -89,7 +89,7 @@ fun PageBackup(
     CustomComposableBottomSheet(
         isBottomSheetVisible = state.bottomSheetAutomaticBackup,
         title = "Automatic Backup",
-        content = {
+        content = { scope, sheetState ->
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(5.dp)

@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,6 +23,7 @@ import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Feedback
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Restore
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.LargeTopAppBar
@@ -33,6 +35,7 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -43,6 +46,7 @@ import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import com.a.todo.contract.ActionSettings
 import com.a.todo.contract.StateSettings
+import com.a.todo.design.CustomComposableBottomSheet
 import com.a.todo.design.CustomComposableElevatedCard
 import com.a.todo.design.CustomConfirmationBottomSheet
 import com.a.todo.design.CustomIconButton
@@ -50,6 +54,7 @@ import com.a.todo.design.CustomTextContent
 import com.a.todo.design.innerWindowInsets
 import com.a.todo.navigation.RoutePage
 import com.a.todo.viewmodel.ViewModelSettings
+import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -79,6 +84,65 @@ fun PageSettings(
                 onAction = onAction
             )
         }
+    )
+
+    CustomComposableBottomSheet(
+        isBottomSheetVisible = state.bottomSheetNoAccount,
+        title = "No Account",
+        content = { scope, sheetState ->
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(15.dp)
+            ) {
+                ElevatedCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {
+                        scope.launch {
+                            sheetState.hide()
+                        }.invokeOnCompletion {
+                            if (!sheetState.isVisible) {
+                                onAction(ActionSettings.BottomSheetNoAccount)
+                            }
+                            backStack.add(RoutePage.PageSignIn)
+                        }
+                    }
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(20.dp),
+                        horizontalArrangement = Arrangement.spacedBy(20.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        CustomTextContent(
+                            text = "Sign In"
+                        )
+                    }
+                }
+                ElevatedCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {
+                        scope.launch {
+                            sheetState.hide()
+                        }.invokeOnCompletion {
+                            if (!sheetState.isVisible) {
+                                onAction(ActionSettings.BottomSheetNoAccount)
+                            }
+                            backStack.add(RoutePage.PageSignUp)
+                        }
+                    }
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(20.dp),
+                        horizontalArrangement = Arrangement.spacedBy(20.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        CustomTextContent(
+                            text = "Sign Up"
+                        )
+                    }
+                }
+            }
+        },
+        onCancel = { onAction(ActionSettings.BottomSheetNoAccount) }
     )
 
     CustomConfirmationBottomSheet(
@@ -150,7 +214,13 @@ private fun Content(
                         text = "Manage your profile details and account security settings. Your data is synced with this account."
                     )
                 },
-                onClick = { backStack.add(RoutePage.PageAccount) }
+                onClick = {
+                    if (state.authState != null) {
+                        backStack.add(RoutePage.PageAccount)
+                    } else {
+                        onAction(ActionSettings.BottomSheetNoAccount)
+                    }
+                }
             ),
             DataClassSettings(
                 icon = Icons.Rounded.Backup,
@@ -164,7 +234,7 @@ private fun Content(
                     if (state.authState != null) {
                         backStack.add(RoutePage.PageBackup)
                     } else {
-                        onAction(ActionSettings.ShowSnackBar("No Account !"))
+                        onAction(ActionSettings.BottomSheetNoAccount)
                     }
                 }
             ),
@@ -180,7 +250,7 @@ private fun Content(
                     if (state.authState != null) {
                         backStack.add(RoutePage.PageRestore)
                     } else {
-                        onAction(ActionSettings.ShowSnackBar("No Account !"))
+                        onAction(ActionSettings.BottomSheetNoAccount)
                     }
                 }
             ),
